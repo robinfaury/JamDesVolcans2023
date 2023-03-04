@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b60aff6cebb42f6419a8796997b0ab4a, type: 3}
+  m_Name: Step
+  m_EditorClassIdentifier: 
+  audioMixer: {fileID: 0}
+  volume: 1
+  pitch: 1
+  soundClips:
+  - clips:
+    - {fileID: 8300000, guid: 9a90fa91c6563374ba4908068bfd27da, type: 3}
+    - {fileID: 8300000, guid: 589165b12f29a1240b0d8941e7ea29af, type: 3}
+    - {fileID: 8300000, guid: 0535adb869596ec4f8a10f57b3186409, type: 3}
+    - {fileID: 8300000, guid: 0a3c7cf4a0a9d574291d53b7887b0c4d, type: 3}
+    - {fileID: 8300000, guid: 1bd0643455ba08844a955b1a0782d85e, type: 3}
+    - {fileID: 8300000, guid: 9207afab88d40154a8f720033f33e682, type: 3}
+    - {fileID: 8300000, guid: a5b931999e7e02a4fa1a36c216b62980, type: 3}
+    - {fileID: 8300000, guid: 25ef058ac361b1e4cbd8af2366338feb, type: 3}
+    - {fileID: 8300000, guid: 14280181d8ac16c4e9989027c3b8064c, type: 3}
+    - {fileID: 8300000, guid: 3237433873856b143bbdbc09cf69976e, type: 3}
+    - {fileID: 8300000, guid: 8270ab5281d88134c829a34870c9e352, type: 3}
+    - {fileID: 8300000, guid: e73bcc8364969504c9f80fcf295970a2, type: 3}
+    - {fileID: 8300000, guid: fdde142e6c49ba148a5e507a0c2a8bb7, type: 3}
+    volume:
+      random: 1
+      defaultValue: 1
+      minValue: 0.8
+      maxValue: 1.2
+    pitch:
+      random: 1
+      defaultValue: 1
+      minValue: 0.9
+      maxValue: 1.1
+  sources: []
