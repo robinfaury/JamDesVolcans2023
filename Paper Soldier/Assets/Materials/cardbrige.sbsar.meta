@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 347318b80f0e96145a31bbbbc5afa3ac
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: dda12f74ff9116a42b23482252b2c482, type: 3}
+  _instancesCopy:
+  - {fileID: 11400000, guid: 78bd5844324e3d74d9a80062186abfb3, type: 2}
+  _fileAsset: {instanceID: 0}
+  _assetPath: Assets/Materials/cardbrige.sbsar
