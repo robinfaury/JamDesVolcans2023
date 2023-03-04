@@ -7,9 +7,6 @@ public class Player : MonoBehaviour
 
     public Level level;
 
-    Vector3 directionForward;
-    Vector3 directionLeft;
-
     public enum Action
     {
         Forward,
@@ -24,7 +21,7 @@ public class Player : MonoBehaviour
     CellDatas[,,] Perceive(int width, int height, int depth)
     {
         CellDatas[,,] perseption = new CellDatas[width, height, depth];
-        Vector3 position = transform.position + directionForward; // Position in front of the character
+        Vector3 position = transform.position + transform.forward; // Position in front of the character
         for (int w=0; w<width; ++w) {
             for (int h = 0; h < height; ++h) {
                 for (int d = 0; d < depth; ++d) {
@@ -37,25 +34,25 @@ public class Player : MonoBehaviour
     }
     IEnumerator Start ()
     {
-        directionForward = transform.forward;
-        directionLeft = -transform.right;
-
-        while (true) {
-            Vector3Int indices = level.PositionToIndex(transform.position);
-            level.map[indices.x, indices.y, indices.z]++;
+        transform.position = level.startPoint.transform.position;
+        while (true)
+        {
             CellDatas[,,] perseption = Perceive(3, 2, 1);
             Action action = Action.DontMove;
 
             if (perseption[1, 0, 0] == CellDatas.Empty && perseption[1, 1, 0] == CellDatas.Empty)
             {
                 action = Action.Forward;
-            } else if (perseption[1,1,0]==CellDatas.Solid && perseption[0, 1, 0] == CellDatas.Solid && perseption[2, 1, 0] == CellDatas.Empty)
+            }
+            else if (perseption[1, 1, 0] == CellDatas.Solid && perseption[0, 1, 0] == CellDatas.Solid && perseption[2, 1, 0] == CellDatas.Empty)
             {
                 action = Action.Right;
-            } else if (perseption[1, 1, 0] == CellDatas.Solid && perseption[0, 1, 0] == CellDatas.Empty && perseption[2, 1, 0] == CellDatas.Solid)
+            }
+            else if (perseption[1, 1, 0] == CellDatas.Solid && perseption[0, 1, 0] == CellDatas.Empty && perseption[2, 1, 0] == CellDatas.Solid)
             {
                 action = Action.Left;
-            } else if (perseption[1, 0, 0] == CellDatas.Solid && perseption[1, 1, 0] == CellDatas.Empty)
+            }
+            else if (perseption[1, 0, 0] == CellDatas.Solid && perseption[1, 1, 0] == CellDatas.Empty)
             {
                 action = Action.JumpForward;
             }
@@ -87,13 +84,6 @@ public class Player : MonoBehaviour
                     break;
             }
             yield return new WaitForSeconds(0.5f);
-        }
-
-        bool GetAt (int x, int y, int z, out Vector3 pos)
-        {
-            Vector3 testPos = transform.position + directionForward * z + directionLeft * x + Vector3.up * y;
-            pos = testPos;
-            return level.CanWalkAt(testPos);
         }
     }
 
