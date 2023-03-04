@@ -8,6 +8,7 @@ using UnityEngine.InputSystem;
 public class Bullet : MonoBehaviour
 {
     public Transform CubeBulletPrefab;
+    public Sound hit;
 
     public static List<Bullet> allBullets = new List<Bullet>();
 
@@ -48,6 +49,7 @@ public class Bullet : MonoBehaviour
 
     public void OnBulletIsOnTarget()
     {
+        hit.Play();
         effect = Instantiate(BulletSpawnEffectPrefab, transform.position, Quaternion.identity);
         effectSpawnTime = Time.time;
         if (isDestructionBullet)
