@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
+using static GameManager;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -100,6 +101,14 @@ public class Level : MonoBehaviour
     }
 
     // ========================================================================= TOOLS
+
+    public void OnPlayerPositionChanged (Vector3 position)
+    {
+        Vector3 playerPosIndex = PositionToIndex (position);
+        Vector3 endIndex = PositionToIndex (endPoint.position);
+        if (playerPosIndex == endIndex) 
+            g_gameManager.NextLevel();
+    }
 
     public Vector3 GetCellCenter(int x, int y, int z)
     {
