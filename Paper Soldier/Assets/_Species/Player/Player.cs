@@ -62,6 +62,14 @@ public class Player : MonoBehaviour
                     else if (perseption[character_index_x + 1, 1, 1] == CellDatas.Empty && perseption[character_index_x + 1, 1, 0] == CellDatas.Empty) {
                         action = perseption[character_index_x + 1, 0, 0] == CellDatas.Empty ? Action.Right : Action.JumpRight;
                     }
+                    else if (perseption[character_index_x - 1, 1, 1] == CellDatas.Solid && perseption[character_index_x - 1, 0, 0] == CellDatas.Solid)
+                    {
+                        action = Action.JumpLeft;
+                    }
+                    else if (perseption[character_index_x + 1, 1, 1] == CellDatas.Solid && perseption[character_index_x + 1, 0, 0] == CellDatas.Solid)
+                    {
+                        action = Action.JumpRight;
+                    }
                 }
                 if (action == Action.DontMove) {
                     action = Action.AboutFace;
