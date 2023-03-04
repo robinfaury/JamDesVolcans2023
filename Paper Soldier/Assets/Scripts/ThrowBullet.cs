@@ -38,7 +38,7 @@ public class ThrowBullet : MonoBehaviour
     void Update()
     {
         Ray ray = camera.ScreenPointToRay(Mouse.current.position.ReadValue());
-        if (Physics.Raycast(ray, out RaycastHit hitInfo))
+        if (Physics.SphereCast(ray, .5f, out RaycastHit hitInfo))
         {
             //Set straw orientation
             StrawPivot.forward = StrawPivot.position - hitInfo.point;
@@ -79,6 +79,7 @@ public class ThrowBullet : MonoBehaviour
                                                                 UnityEngine.Random.Range(-360f, 360f));
         Transform bullet = Instantiate<Transform>(prefabBullet, StrawOutput.position, Quaternion.identity);
 
+        
         bullet.gameObject.GetComponent<Bullet>().Init(cell, level);
 
         float lDuration = .5f;
@@ -96,6 +97,8 @@ public class ThrowBullet : MonoBehaviour
         bullet.position = targetPosition;
         bullet.localScale = endScale;
         level.map[cell.x, cell.y, cell.z] = CellDatas.Solid;
+
+        bullet.gameObject.GetComponent<Bullet>().CheckNeighbours();
 
         isThrowing = false;
     }
