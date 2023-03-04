@@ -12,6 +12,8 @@ public class Level : MonoBehaviour
     [Title ("PARAMETRES")]
     public Transform minPoint;
     public Transform maxPoint;
+    public Transform startPoint;
+    public Transform endPoint;
     [Min(0.5f)]public float cellSize = 2;
     [Range(0.1f, 1f)]public float cellExigence = 0.5f;
     public LayerMask occlusionLayer;
@@ -43,6 +45,11 @@ public class Level : MonoBehaviour
     public Vector3 cellHeight;
 
     // ========================================================================= GENERATION
+
+    void Awake()
+    {
+        GenerateVoxel();
+    }
 
     [Button("GenerateVoxel")]
     public void GenerateVoxel()
@@ -91,19 +98,6 @@ public class Level : MonoBehaviour
                 }
             }
         }
-    }
-
-    int cacheX, cacheY, cacheZ;
-    public bool CanWalkAt(Vector3 pos)
-    {
-        if (map == null) GenerateVoxel();
-        cacheX = Mathf.FloorToInt((pos.x - minPointRounded.x) / cellSize);
-        cacheY = Mathf.FloorToInt((pos.y - minPointRounded.y) / cellSize);
-        cacheZ = Mathf.FloorToInt((pos.z - minPointRounded.z) / cellSize);
-        if (cacheX < 0 || cacheX > mapSizeX - 1) return false;
-        if (cacheY < 0 || cacheY > mapSizeY - 1) return false;
-        if (cacheZ < 0 || cacheZ > mapSizeZ - 1) return false;
-        return walkableMap[cacheX, cacheY, cacheZ];
     }
 
     // ========================================================================= TOOLS
