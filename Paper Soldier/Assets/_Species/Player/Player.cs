@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Sirenix.OdinInspector;
+using static GameManager;
 
 public class Player : MonoBehaviour
 {
@@ -61,6 +62,14 @@ public class Player : MonoBehaviour
                     else if (perseption[character_index_x + 1, 1, 1] == CellDatas.Empty && perseption[character_index_x + 1, 1, 0] == CellDatas.Empty) {
                         action = perseption[character_index_x + 1, 0, 0] == CellDatas.Empty ? Action.Right : Action.JumpRight;
                     }
+                    else if (perseption[character_index_x - 1, 1, 1] == CellDatas.Solid && perseption[character_index_x - 1, 0, 0] == CellDatas.Solid)
+                    {
+                        action = Action.JumpLeft;
+                    }
+                    else if (perseption[character_index_x + 1, 1, 1] == CellDatas.Solid && perseption[character_index_x + 1, 0, 0] == CellDatas.Solid)
+                    {
+                        action = Action.JumpRight;
+                    }
                 }
                 if (action == Action.DontMove) {
                     action = Action.AboutFace;
@@ -115,6 +124,7 @@ public class Player : MonoBehaviour
         animator.Update(Time.deltaTime * animationScale);
     }
 
+    Vector3 a, b;
     public void Move(AnimationCurve f, AnimationCurve v, Vector3 start, Vector3 delta, float tickDuration, string trigger, Action action)
     {
         StartCoroutine(Routine()); IEnumerator Routine ()
@@ -123,6 +133,9 @@ public class Player : MonoBehaviour
             Vector3 end = start + delta;
             Vector3 directionStart = transform.forward;
             Vector3 directionEnd = (end - start).WithY (0).normalized;
+
+            a = start;
+            b = end;
 
             float duration = tickDuration * movementTickPercent;
             Vector3 df = (end - start).normalized.WithY (0);
@@ -136,6 +149,7 @@ public class Player : MonoBehaviour
             }
             transform.position = end;
             model.forward = directionEnd;
+            g_onPlayerChanged?.Invoke(end);
         }
     }
 
@@ -197,6 +211,9 @@ public class Player : MonoBehaviour
         int x = level.ConvertCoordX (transform.position.x);
         int y = level.ConvertCoordY (transform.position.y);
         int z = level.ConvertCoordZ (transform.position.z);
+
+        Gizmos.DrawSphere(a, 0.2f);
+        Gizmos.DrawSphere(b, 0.2f);
 
         DrawAt(0, 0, 1);
         void DrawAt(int xo, int yo, int zo)

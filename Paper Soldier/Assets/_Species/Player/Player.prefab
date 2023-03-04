@@ -84,20 +84,20 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 2.5781555
-      outSlope: 2.5781555
+      inSlope: 0.004145355
+      outSlope: 0.004145355
       tangentMode: 0
-      weightedMode: 0
+      weightedMode: 3
       inWeight: 0
-      outWeight: 0.034666665
+      outWeight: 0.5089413
     - serializedVersion: 3
-      time: 1
+      time: 0.77978516
       value: 1
-      inSlope: 0.051976077
-      outSlope: 0.051976077
+      inSlope: 0.004500777
+      outSlope: 0.004500777
       tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.09733331
+      weightedMode: 3
+      inWeight: 0.5025137
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -130,22 +130,22 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
+      time: 0.3003925
       value: 0
-      inSlope: 2
-      outSlope: 2
+      inSlope: 5.37985
+      outSlope: 5.37985
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.059790928
     - serializedVersion: 3
-      time: 1
+      time: 0.80025417
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: -0.008387315
+      outSlope: -0.008387315
       tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
+      weightedMode: 3
+      inWeight: 0.48341697
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -154,22 +154,31 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
+      time: 0.3003925
       value: 0
-      inSlope: 2
-      outSlope: 2
+      inSlope: 17.171991
+      outSlope: 17.171991
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.064084746
     - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
+      time: 0.42823955
+      value: 1.3034823
+      inSlope: 1.1487061
+      outSlope: 1.1487061
       tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
+      weightedMode: 3
+      inWeight: 1
+      outWeight: 0.46560574
+    - serializedVersion: 3
+      time: 0.90374535
+      value: 1
+      inSlope: -0.008387315
+      outSlope: -0.008387315
+      tangentMode: 0
+      weightedMode: 3
+      inWeight: 0.48341697
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -268,11 +277,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -5465095721135946236, guid: 8d8e0f2771d914f4dae076699403a43b,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 3232cf9403c55c64d8109b96d1090d61, type: 2}
     - target: {fileID: 919132149155446097, guid: 8d8e0f2771d914f4dae076699403a43b,
         type: 3}
       propertyPath: m_Name
       value: Mesh
       objectReference: {fileID: 0}
+    - target: {fileID: 3035276634626016104, guid: 8d8e0f2771d914f4dae076699403a43b,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 3232cf9403c55c64d8109b96d1090d61, type: 2}
     - target: {fileID: 5866666021909216657, guid: 8d8e0f2771d914f4dae076699403a43b,
         type: 3}
       propertyPath: m_Controller

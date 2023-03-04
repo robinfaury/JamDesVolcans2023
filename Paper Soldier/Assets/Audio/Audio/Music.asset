@@ -20,7 +20,7 @@ MonoBehaviour:
     - {fileID: 8300000, guid: f22a90448b286974f9de6dda834a48bb, type: 3}
     volume:
       random: 0
-      defaultValue: 1
+      defaultValue: 0
       minValue: 0.8
       maxValue: 1.2
     pitch:
@@ -30,6 +30,9 @@ MonoBehaviour:
       maxValue: 1.2
     playProbability: 1
   sources:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}

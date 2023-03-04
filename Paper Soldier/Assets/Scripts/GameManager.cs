@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
 {
 
     [Title("BOUCLE")]
-    public float startDelay = 4;
+    public float transitionDelay = 4;
 
     [Title("REFERENCES")]
     public CanvasGroup canvasGroup;
@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
     public static TickManager g_tickManager;
     public static GameManager g_gameManager;
 
+    public static System.Action<Vector3> g_onPlayerChanged;
     public static bool g_isGamePlaying;
 
     void Awake()
@@ -48,10 +49,10 @@ public class GameManager : MonoBehaviour
     {
         StartCoroutine(Routine()); IEnumerator Routine ()
         {
-            FadeFromTo(1, 0, startDelay);
+            FadeFromTo(1, 0, transitionDelay);
             music.Play();
 
-            yield return new WaitForSeconds(startDelay);
+            yield return new WaitForSeconds(transitionDelay);
 
             g_player.StartMovement();
             g_tickManager.StartTicking();
@@ -66,11 +67,37 @@ public class GameManager : MonoBehaviour
 
     public static void LoadLevel (int index)
     {
+        if (g_currentLevel != null) g_onPlayerChanged -= g_currentLevel.OnPlayerPositionChanged;
+
         Level level = g_levels[index];
         g_currentLevel = level;
         Vector3 gridBottomPos = g_currentLevel.GetCellBottomAt (level.startPoint.position);
         g_player.transform.position = gridBottomPos;
         g_currentLevel.GenerateVoxel();
+
+        g_onPlayerChanged += g_currentLevel.OnPlayerPositionChanged;
+    }
+
+    public void NextLevel ()
+    {
+        StartCoroutine(Routine()); IEnumerator Routine()
+        {
+            g_player.StopMovement();
+            g_tickManager.StopTicking();
+            FadeFromTo(0, 1, transitionDelay);
+            yield return new WaitForSeconds(transitionDelay);
+            LoadLevel(g_currentLevelIndex++);
+            FadeFromTo(1, 0, transitionDelay);
+            yield return new WaitForSeconds(transitionDelay);
+
+            g_player.StartMovement();
+            g_tickManager.StartTicking();
+            canvasGroup.alpha = 0;
+            coucouSound.Play();
+
+            yield return new WaitForEndOfFrame();
+            g_isGamePlaying = true;
+        }
     }
 
     void FadeFromTo(float from, float to, float duration)
