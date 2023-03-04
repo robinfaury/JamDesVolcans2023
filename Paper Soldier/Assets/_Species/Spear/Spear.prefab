@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3340013448949463386}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.24}
+  m_LocalPosition: {x: 0, y: 0, z: -1.1930001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -84,7 +84,7 @@ MonoBehaviour:
   outPosition: {fileID: 3340013449649622361}
   phaseDelta: 0
   tickPercentageIn: 0.8
-  tickPercentageOut: 0.1
+  tickPercentageOut: 0
 --- !u!1 &3340013449649622360
 GameObject:
   m_ObjectHideFlags: 0
@@ -216,7 +216,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 06681e140b74aa345926bed03cf47f70,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.953
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 06681e140b74aa345926bed03cf47f70,
         type: 3}
