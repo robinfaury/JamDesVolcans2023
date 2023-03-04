@@ -113,3 +113,5 @@ MonoBehaviour:
   CubeBulletPrefab: {fileID: 9059963326549219663, guid: 63dde6596e579ad4298b0dc90efd02c1,
     type: 3}
   timealive: 10
+  BulletSpawnEffectPrefab: {fileID: 4668173433683037349, guid: 055024d2e465dd441a921d347d54bf53,
+    type: 3}

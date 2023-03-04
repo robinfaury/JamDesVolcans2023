@@ -21,6 +21,10 @@ public class Bullet : MonoBehaviour
 
     private bool isDestructionBullet = false;
 
+    public GameObject BulletSpawnEffectPrefab;
+    private GameObject effect;
+    private float effectSpawnTime;
+
     public void Init(Vector3Int cell, Level refLevel, bool isConstruction)
     {
         Renderer render = GetComponent<Renderer>();
@@ -32,7 +36,6 @@ public class Bullet : MonoBehaviour
         }
         else
         {
-            render.material.color = Color.blue;
             timealive = float.MaxValue;
             isDestructionBullet = false;
         }
@@ -43,9 +46,11 @@ public class Bullet : MonoBehaviour
         allBullets.Add(this);
     }
 
-    public void CheckNeighbours()
+    public void OnBulletIsOnTarget()
     {
-        if(isDestructionBullet)
+        effect = Instantiate(BulletSpawnEffectPrefab, transform.position, Quaternion.identity);
+        effectSpawnTime = Time.time;
+        if (isDestructionBullet)
         {
             List<Bullet> bulletToDestroy = new List<Bullet>();
             for (int i = 0; i < allBullets.Count; i++)
@@ -53,7 +58,6 @@ public class Bullet : MonoBehaviour
                 if (AreNeighbours(this, allBullets[i]))
                 {
                     bulletToDestroy.Add(allBullets[i]);
-                    
                 }
             }
             for (int i = 0; i < bulletToDestroy.Count; i++)
@@ -106,15 +110,16 @@ public class Bullet : MonoBehaviour
         return false;
     }
 
-
     private void Update()
     {
         if (Time.time - startTime > timealive)
         {
             DestroyBullet();
         }
+        if (effect != null
+            && Time.time - effectSpawnTime > 3f)
+            Destroy(effect);
     }
-
 
     private void DestroyBullet()
     {
@@ -137,5 +142,10 @@ public class Bullet : MonoBehaviour
                                         0,
                                         availableRotation[Random.Range(0, availableRotation.Count)]);
         cube.GetComponent<Renderer>().material.color = GetComponent<Renderer>().material.color;
+    }
+
+    private void OnDestroy()
+    {
+        Destroy(effect);
     }
 }

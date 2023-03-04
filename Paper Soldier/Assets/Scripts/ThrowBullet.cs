@@ -33,6 +33,7 @@ public class ThrowBullet : MonoBehaviour
         StrawPivot.localPosition = new Vector3(0, -0.41f, 0.457f);
         bulletPreview = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
         bulletPreview.GetComponent<Collider>().enabled = false;
+        bulletPreview.transform.localScale = Vector3.one * .5f;
     }
 
     void Update()
@@ -44,12 +45,12 @@ public class ThrowBullet : MonoBehaviour
     public void UpdateThrowBullet ()
     {
         Ray ray = camera.ScreenPointToRay(Mouse.current.position.ReadValue());
-        if (Physics.SphereCast(ray, g_currentLevel.cellSize * 0.1f, out RaycastHit hitInfo)) {
+        if (Physics.SphereCast(ray, g_currentLevel.cellSize * 0.2f, out RaycastHit hitInfo)) {
             //Set straw orientation
             StrawPivot.forward = StrawPivot.position - hitInfo.point;
             point = hitInfo.point;
             //Set preview and precompute voxelPos
-            Vector3Int index = level.PositionToIndex(hitInfo.point + Vector3.up * g_currentLevel.cellSize / 2);
+            Vector3Int index = level.PositionToIndex(hitInfo.point + Vector3.up * g_currentLevel.cellSize / 4);
             Vector3 cellCenter = level.GetCellCenter(index.x, index.y, index.z);
             if (g_currentLevel.map[index.x, index.y, index.z] == CellDatas.Empty) {
                 bulletPreview.gameObject.SetActive(true);
@@ -86,7 +87,7 @@ public class ThrowBullet : MonoBehaviour
         float lDuration = .5f;
         float lTime = 0f;
 
-        while (lTime < lDuration)
+        while (lTime < 1f)
         {
             bullet.position = Vector3.Lerp(startposition, targetPosition,lTime*lTime);
             bullet.localScale = Vector3.Lerp(startScale, endScale, lTime*lTime);
@@ -98,9 +99,8 @@ public class ThrowBullet : MonoBehaviour
         bullet.position = targetPosition;
         bullet.localScale = endScale;
         level.map[cell.x, cell.y, cell.z] = CellDatas.Solid;
-        level.GenerateVoxel();
 
-        bullet.gameObject.GetComponent<Bullet>().CheckNeighbours();
+        bullet.gameObject.GetComponent<Bullet>().OnBulletIsOnTarget();
 
         isThrowing = false;
 
