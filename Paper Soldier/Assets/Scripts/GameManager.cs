@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     [Title("REFERENCES")]
     public CanvasGroup canvasGroup;
     public Sound music;
+    public Sound coucouSound;
     public List<Level> levels;
 
     [Title("REFERENCES GLOBALES")]
@@ -48,14 +49,15 @@ public class GameManager : MonoBehaviour
         StartCoroutine(Routine()); IEnumerator Routine ()
         {
             FadeFromTo(1, 0, startDelay);
+            music.Play();
+
             yield return new WaitForSeconds(startDelay);
 
             g_player.StartMovement();
             g_tickManager.StartTicking();
             LoadLevel(0);
-
             canvasGroup.alpha = 0;
-            music.Play();
+            coucouSound.Play();
 
             yield return new WaitForEndOfFrame();
             g_isGamePlaying = true;

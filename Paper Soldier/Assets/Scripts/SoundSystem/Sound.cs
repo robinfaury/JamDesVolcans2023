@@ -78,6 +78,7 @@ public class Sound : ScriptableObject
             GUILayout.Label("Params :");
             clip.volume.DrawField("Volume");
             clip.pitch.DrawField("Pitch");
+            clip.playProbability = clip.playProbability.Draw("Player Proba");
             EditorGUILayout.EndVertical();
         }
         if (soundClips.Count == 0)

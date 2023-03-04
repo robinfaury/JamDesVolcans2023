@@ -37,4 +37,5 @@ MonoBehaviour:
       defaultValue: 1
       minValue: 0.9
       maxValue: 1.1
+    playProbability: 1
   sources: []
