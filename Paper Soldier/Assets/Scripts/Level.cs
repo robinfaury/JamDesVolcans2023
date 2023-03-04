@@ -14,21 +14,17 @@ public class Level : MonoBehaviour
     public Transform maxPoint;
     public Transform startPoint;
     public Transform endPoint;
-    [Min(0.5f)]public float cellSize = 2;
-    [Range(0.1f, 1f)]public float cellExigence = 0.5f;
+    public Vector3 offset;
+    [Min(0.5f)] public float cellSize = 2;
+    [Range(0.1f, 1f)] public float cellExigence = 0.5f;
     public LayerMask occlusionLayer;
 
-    [Title ("DEBUG")]
+    [Title ("DEBUGGIN & RUNTIME")]
     public bool showGizmos;
     public bool autoRefresh;
     public Color walkableMapColor = Color.red;
-
-    // 0 = vide
-    // 1 = collision
-    // 2 = end level
     public CellDatas [,,] map;
     public bool [,,] walkableMap;
-
     public Vector3 maxPointRounded;
     public Vector3 minPointRounded;
     public int dirX;
@@ -46,16 +42,19 @@ public class Level : MonoBehaviour
 
     // ========================================================================= GENERATION
 
-    void Awake()
-    {
-        GenerateVoxel();
-    }
-
     [Button("GenerateVoxel")]
     public void GenerateVoxel()
     {
-        maxPointRounded = new Vector3(Mathf.FloorToInt(maxPoint.position.x), Mathf.FloorToInt(maxPoint.position.y), Mathf.FloorToInt(maxPoint.position.z));
-        minPointRounded = new Vector3(Mathf.FloorToInt(minPoint.position.x), Mathf.FloorToInt(minPoint.position.y), Mathf.FloorToInt(minPoint.position.z));
+        maxPointRounded = new Vector3(
+            Mathf.FloorToInt(maxPoint.position.x),
+            Mathf.FloorToInt(maxPoint.position.y),
+            Mathf.FloorToInt(maxPoint.position.z)
+        ) + offset;
+        minPointRounded = new Vector3(
+            Mathf.FloorToInt(minPoint.position.x),
+            Mathf.FloorToInt(minPoint.position.y),
+            Mathf.FloorToInt(minPoint.position.z)
+        ) + offset;
 
         sizeX = Mathf.Abs (maxPointRounded.x - minPointRounded.x);
         sizeY = Mathf.Abs (maxPointRounded.y - minPointRounded.y);
@@ -137,6 +136,11 @@ public class Level : MonoBehaviour
                 }
             }
         }
+
+        Vector3Int indexStart = PositionToIndex (startPoint.position);
+        Vector3Int indexEnd = PositionToIndex (endPoint.position);
+        DrawCell(indexStart.x, indexStart.y, indexStart.z, Color.green);
+        DrawCell(indexEnd.x, indexEnd.y, indexEnd.z, Color.green);
     }
 
     // Draw a voxel cell

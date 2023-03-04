@@ -11,19 +11,29 @@ public class TickManager : MonoBehaviour
     public static float TickDuration;
 
     float timeBank;
-
-    private void Start()
-    {
-        timeBank = 0;
-    }
+    public bool isTicking;
 
     void Update ()
     {
-        timeBank += Time.deltaTime;
-        while (timeBank > tickDuration) {
-            onTick?.Invoke();
-            timeBank -= tickDuration;
+        if (isTicking) {
+            timeBank += Time.deltaTime;
+            while (timeBank > tickDuration) {
+                onTick?.Invoke();
+                timeBank -= tickDuration;
+            }
+            TickDuration = tickDuration;
         }
-        TickDuration = tickDuration;
+    }
+
+    public void StartTicking ()
+    {
+        isTicking = true;
+        timeBank = 0;
+    }
+
+    public void StopTicking ()
+    {
+        isTicking = false;
+        timeBank = 0;
     }
 }

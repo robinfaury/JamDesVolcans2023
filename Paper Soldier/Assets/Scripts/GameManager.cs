@@ -2,24 +2,72 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Sirenix.OdinInspector;    
 
 public class GameManager : MonoBehaviour
 {
 
+    [Title("BOUCLE")]
+    public float startDelay = 4;
+
+    [Title("REFERENCES")]
     public CanvasGroup canvasGroup;
     public Sound music;
     public List<Level> levels;
 
-    private void Start()
+    [Title("REFERENCES GLOBALES")]
+    public Player player;
+    public TickManager tickManager;
+
+    public static int g_currentLevelIndex;
+    public static Level g_currentLevel;
+
+    public static List<Level> g_levels;
+    public static Player g_player;
+    public static TickManager g_tickManager;
+    public static GameManager g_gameManager;
+
+    public static bool g_isGamePlaying;
+
+    void Awake()
     {
-        canvasGroup.alpha = 0;
-        music.Play();
-        FadeFromTo(1, 0, 4f);
+        g_player = player;
+        g_tickManager = tickManager;
+        g_currentLevelIndex = 0;
+        g_gameManager = this;
+        g_levels = levels;
     }
 
-    void LoadLevel ()
+    void Start()
     {
+        StartGame();
+    }
 
+    public void StartGame ()
+    {
+        StartCoroutine(Routine()); IEnumerator Routine ()
+        {
+            FadeFromTo(1, 0, startDelay);
+            yield return new WaitForSeconds(startDelay);
+
+            g_player.StartMovement();
+            g_tickManager.StartTicking();
+            LoadLevel(0);
+
+            canvasGroup.alpha = 0;
+            music.Play();
+
+            yield return new WaitForEndOfFrame();
+            g_isGamePlaying = true;
+        }
+    }
+
+    public static void LoadLevel (int index)
+    {
+        Level level = g_levels[index];
+        g_currentLevel = level;
+        g_player.transform.position = level.startPoint.position;
+        g_currentLevel.GenerateVoxel();
     }
 
     void FadeFromTo(float from, float to, float duration)

@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
+using static GameManager;
 
 public class ThrowBullet : MonoBehaviour
 {
@@ -37,32 +37,34 @@ public class ThrowBullet : MonoBehaviour
 
     void Update()
     {
+        if (g_isGamePlaying) UpdateThrowBullet();
+    }
+
+    Vector3 point;
+    public void UpdateThrowBullet ()
+    {
         Ray ray = camera.ScreenPointToRay(Mouse.current.position.ReadValue());
-        if (Physics.SphereCast(ray, .5f, out RaycastHit hitInfo))
-        {
+        if (Physics.SphereCast(ray, g_currentLevel.cellSize * 0.3f, out RaycastHit hitInfo)) {
             //Set straw orientation
             StrawPivot.forward = StrawPivot.position - hitInfo.point;
-
+            point = hitInfo.point;
             //Set preview and precompute voxelPos
-            Vector3Int index = level.PositionToIndex(hitInfo.point);
+            Vector3Int index = level.PositionToIndex(hitInfo.point + Vector3.one * g_currentLevel.cellSize / 2);
             Vector3 cellCenter = level.GetCellCenter(index.x, index.y, index.z);
-            if (level.map[index.x, index.y, index.z] == CellDatas.Empty)
-            {
+            if (g_currentLevel.map[index.x, index.y, index.z] == CellDatas.Empty) {
                 bulletPreview.gameObject.SetActive(true);
                 bulletPreview.position = cellCenter;
-             
+
                 //throw bullet
                 if (Mouse.current.leftButton.wasPressedThisFrame
                 && Time.time - lastTimeShot > timeBetweenShot
-                && !isThrowing)
-                {
-                 
+                && !isThrowing) {
+
                     bulletPreview.gameObject.SetActive(false);
                     StartCoroutine(ThrowingBullet(cellCenter, index));
                 }
             }
-            else
-            {
+            else {
                 bulletPreview.gameObject.SetActive(false);
             }
         }
@@ -101,5 +103,13 @@ public class ThrowBullet : MonoBehaviour
         bullet.gameObject.GetComponent<Bullet>().CheckNeighbours();
 
         isThrowing = false;
+
+        g_currentLevel.GenerateVoxel();
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(point, 0.3f);
     }
 }
