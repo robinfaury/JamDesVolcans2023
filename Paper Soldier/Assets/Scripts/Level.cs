@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 public class Level : MonoBehaviour
 {
     [Title ("PARAMETRES")]
@@ -17,29 +21,34 @@ public class Level : MonoBehaviour
     public bool autoRefresh;
     public Color walkableMapColor = Color.red;
 
-    public bool[,,] map;
-    public bool[,,] walkMap;
+    // 0 = vide
+    // 1 = collision
+    // 2 = end level
+    public CellDatas [,,] map;
+    public bool [,,] walkableMap;
 
-    Vector3 maxPointRounded;
-    Vector3 minPointRounded;
-    float dirX;
-    float dirY;
-    float dirZ;
-    float sizeX;
-    float sizeY;
-    float sizeZ;
+    public Vector3 maxPointRounded;
+    public Vector3 minPointRounded;
+    public int dirX;
+    public int dirY;
+    public int dirZ;
+    public float sizeX;
+    public float sizeY;
+    public float sizeZ;
     public int mapSizeX;
     public int mapSizeY;
     public int mapSizeZ;
-    Vector3 cellWidth;
-    Vector3 cellLength;
-    Vector3 cellHeight;
+    public Vector3 cellWidth;
+    public Vector3 cellLength;
+    public Vector3 cellHeight;
 
-    [Button("BAKE")]
-    public void Bake()
+    // ========================================================================= GENERATION
+
+    [Button("GenerateVoxel")]
+    public void GenerateVoxel()
     {
-        maxPointRounded = new Vector3(Mathf.CeilToInt(maxPoint.position.x), Mathf.CeilToInt(maxPoint.position.y), Mathf.CeilToInt(maxPoint.position.z));
-        minPointRounded = new Vector3(Mathf.CeilToInt(minPoint.position.x), Mathf.CeilToInt(minPoint.position.y), Mathf.CeilToInt(minPoint.position.z));
+        maxPointRounded = new Vector3(Mathf.FloorToInt(maxPoint.position.x), Mathf.FloorToInt(maxPoint.position.y), Mathf.FloorToInt(maxPoint.position.z));
+        minPointRounded = new Vector3(Mathf.FloorToInt(minPoint.position.x), Mathf.FloorToInt(minPoint.position.y), Mathf.FloorToInt(minPoint.position.z));
 
         sizeX = Mathf.Abs (maxPointRounded.x - minPointRounded.x);
         sizeY = Mathf.Abs (maxPointRounded.y - minPointRounded.y);
@@ -57,14 +66,14 @@ public class Level : MonoBehaviour
         cellLength = Vector3.forward * cellSize;
         cellHeight = Vector3.up * cellSize;
 
-        map = new bool [mapSizeX, mapSizeY, mapSizeZ];
-        walkMap = new bool [mapSizeX, mapSizeY, mapSizeZ];
+        map = new CellDatas [mapSizeX, mapSizeY, mapSizeZ];
+        walkableMap = new bool[mapSizeX, mapSizeY, mapSizeZ];
 
         // Occlusion
         for (int x = 0; x < mapSizeX; x++) {
             for (int y = 0; y < mapSizeY; y++) {
                 for (int z = 0; z < mapSizeZ; z++) {
-                    map[x, y, z] = !OcclusionOn(x, y, z);
+                    map[x, y, z] = IsCellOccluded(x, y, z) ? CellDatas.Solid : CellDatas.Empty;
                 }
             }
         }
@@ -73,10 +82,10 @@ public class Level : MonoBehaviour
         for (int x = 0; x < mapSizeX; x++) {
             for (int z = 0; z < mapSizeZ; z++) {
                 for (int y = mapSizeY - 1; y > 1; y--) {
-                    bool topCell = map[x, y, z];
-                    bool bottomCell = map[x, y - 1, z];
+                    bool topCell = map[x, y, z] == CellDatas.Empty;
+                    bool bottomCell = map[x, y - 1, z] == CellDatas.Empty;
                     if (!bottomCell && topCell) {
-                        walkMap[x, y, z] = true;
+                        walkableMap[x, y, z] = true;
                         break;
                     }
                 }
@@ -84,48 +93,20 @@ public class Level : MonoBehaviour
         }
     }
 
-    static int cacheX;
-    static int cacheY;
-    static int cacheZ;
+    int cacheX, cacheY, cacheZ;
     public bool CanWalkAt(Vector3 pos)
     {
-        if (map == null) Bake();
+        if (map == null) GenerateVoxel();
         cacheX = Mathf.FloorToInt((pos.x - minPointRounded.x) / cellSize);
         cacheY = Mathf.FloorToInt((pos.y - minPointRounded.y) / cellSize);
         cacheZ = Mathf.FloorToInt((pos.z - minPointRounded.z) / cellSize);
         if (cacheX < 0 || cacheX > mapSizeX - 1) return false;
         if (cacheY < 0 || cacheY > mapSizeY - 1) return false;
         if (cacheZ < 0 || cacheZ > mapSizeZ - 1) return false;
-        return walkMap[cacheX, cacheY, cacheZ];
+        return walkableMap[cacheX, cacheY, cacheZ];
     }
 
-    private void OnDrawGizmos()
-    {
-        if (!showGizmos || walkMap == null) return;
-        if (autoRefresh) Bake();
-
-        // Map
-        for (int x = 0; x < mapSizeX; x++) {
-            for (int z = 0; z < mapSizeZ; z++) {
-                for (int y = mapSizeY - 1; y > 1; y--) {
-                    if (walkMap[x, y, z]) DrawCell(x, y, z, walkableMapColor);
-                }
-            }
-        }
-    }
-
-    // Cell
-    public void DrawCell(int x, int y, int z, Color color)
-    {
-        Gizmos.color = color;
-        Vector3 center = GetCellCenter(x, y, z);
-        Vector3 scale = new Vector3 (
-                0.8f,
-                0.3f,
-                0.8f
-            ) * cellSize;
-        Gizmos.DrawCube(center, scale);
-    }
+    // ========================================================================= TOOLS
 
     Vector3 GetCellCenter(int x, int y, int z)
     {
@@ -136,7 +117,7 @@ public class Level : MonoBehaviour
         );
     }
 
-    public bool OcclusionOn(int x, int y, int z)
+    public bool IsCellOccluded(int x, int y, int z)
     {
         float exi = cellExigence / 2;
         return Physics.CheckBox(
@@ -146,4 +127,67 @@ public class Level : MonoBehaviour
             occlusionLayer
         );
     }
+
+    // ========================================================================= GIZMOS
+
+    private void OnDrawGizmos()
+    {
+        if (!showGizmos || map == null) return;
+        if (autoRefresh) GenerateVoxel();
+
+        // Map
+        for (int x = 0; x < mapSizeX; x++) {
+            for (int z = 0; z < mapSizeZ; z++) {
+                for (int y = mapSizeY - 1; y > 1; y--) {
+                    if (walkableMap[x, y, z]) DrawCell(x, y, z, walkableMapColor);
+                }
+            }
+        }
+    }
+
+    // Draw a voxel cell
+    public void DrawCell(int x, int y, int z, Color color)
+    {
+        Gizmos.color = color;
+        Vector3 center = GetCellCenter(x, y, z) - Vector3.up * cellSize / 4;
+        Gizmos.DrawCube(center, Vector3.one * 0.5f * cellSize);
+
+#if UNITY_EDITOR
+        Handles.color = new Color (color.r, color.g, color.b, 0.05f);
+        Handles.DrawWireCube(center, Vector3.one);
+#endif
+    }
+
+    public int ConvertCoordX (float x)
+    {
+        float dist = Mathf.Abs (x - minPointRounded.x);
+        return Mathf.Clamp (Mathf.FloorToInt(dist / cellSize), 0, mapSizeX - 1);
+    }
+
+    public int ConvertCoordY(float y)
+    {
+        float dist = Mathf.Abs (y - minPointRounded.y);
+        return Mathf.Clamp(Mathf.FloorToInt(dist / cellSize), 0, mapSizeY - 1);
+    }
+
+    public int ConvertCoordZ(float z)
+    {
+        float dist = Mathf.Abs (z - minPointRounded.z);
+        return Mathf.Clamp(Mathf.FloorToInt(dist / cellSize), 0, mapSizeZ - 1);
+    }
+
+    public Vector3Int PositionToIndex(Vector3 position)
+    {
+        return new Vector3Int(
+            ConvertCoordX(position.x),
+            ConvertCoordY(position.y),
+            ConvertCoordZ(position.z));
+    }
+}
+
+public enum CellDatas
+{
+    Empty,
+    Solid,
+    NextLevelCell
 }
