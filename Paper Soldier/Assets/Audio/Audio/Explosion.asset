@@ -28,6 +28,7 @@ MonoBehaviour:
       defaultValue: 1
       minValue: 0.8
       maxValue: 1.2
+    playProbability: 1
   - clips:
     - {fileID: 8300000, guid: c6f1974b389f59b40a8e5d25232a919b, type: 3}
     volume:
@@ -40,6 +41,7 @@ MonoBehaviour:
       defaultValue: 1
       minValue: 0.8
       maxValue: 1.2
+    playProbability: 1
   - clips:
     - {fileID: 8300000, guid: e35dc7bede85a8545a61cb29451ba8af, type: 3}
     volume:
@@ -52,4 +54,5 @@ MonoBehaviour:
       defaultValue: 1
       minValue: 0.8
       maxValue: 1.2
+    playProbability: 1
   sources: []

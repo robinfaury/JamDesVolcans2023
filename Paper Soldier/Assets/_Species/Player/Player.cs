@@ -9,9 +9,19 @@ public class Player : MonoBehaviour
 
     [Title ("PARAMETERS")]
     [Range(0f, 1f)] public float movementTickPercent = 0.5f;
+    public AnimationCurve walkFCurve;
+    public AnimationCurve walkVCurve;
+    public AnimationCurve jumpFCurve;
+    public AnimationCurve jumpVCurve;
+    public AnimationCurve rotationCurve;
+    public Sound stepSound;
+    public Sound jumpSound;
+    public Sound fallSound;
 
     [Title ("REFERENCES")]
+    public EventListener eventListener;
     public Animator animator;
+    public Transform model;
 
     [Title ("DEBUG & RUNTIME")]
     public Level level;
@@ -22,6 +32,8 @@ public class Player : MonoBehaviour
     IEnumerator Start ()
     {
         transform.position = level.startPoint.transform.position;
+        eventListener.onEvent += Event;
+
         while (true) {
             while (isMoving) {
 
@@ -54,23 +66,46 @@ public class Player : MonoBehaviour
                     action = Action.AboutFace;
                 }
 
+                int tickAmount = 1;
+                string trigger = "walk";
+                if (action == Action.JumpForward || action == Action.JumpRight || action == Action.JumpLeft) {
+                    tickAmount = 2;
+                    trigger = "jump";
+                }
+                float tickDuration = TickManager.TickDuration * movementTickPercent * tickAmount;
+
                 switch (action) {
-                    case Action.Forward: Move(transform.position, transform.forward, action); break;
-                    case Action.Right: Move(transform.position, transform.right, action); break;
-                    case Action.Left: Move(transform.position, - transform.right, action); break;
-                    case Action.JumpForward: Move(transform.position, transform.up + transform.forward, action); break;
-                    case Action.JumpRight: Move(transform.position, transform.up + transform.right, action); break;
-                    case Action.JumpLeft: Move(transform.position, transform.up - transform.right, action); break;
-                    case Action.Fall: Move(transform.position, - transform.up, action); break;
+                    case Action.Forward: 
+                        Move(walkFCurve, walkVCurve, transform.position, transform.forward, tickDuration, trigger, action);
+                        break;
+                    case Action.Right: 
+                        Move(walkFCurve, walkVCurve, transform.position, transform.right, tickDuration, trigger, action);
+                        break;
+                    case Action.Left: 
+                        Move(walkFCurve, walkVCurve, transform.position, - transform.right, tickDuration, trigger, action);
+                        break;
+                    case Action.JumpForward: 
+                        Move(jumpFCurve, jumpVCurve, transform.position, transform.up + transform.forward, tickDuration, trigger, action); 
+                        break;
+                    case Action.JumpRight: 
+                        Move(jumpFCurve, jumpVCurve, transform.position, transform.up + transform.right, tickDuration, trigger, action); 
+                        break;
+                    case Action.JumpLeft: 
+                        Move(jumpFCurve, jumpVCurve, transform.position, transform.up - transform.right, tickDuration, trigger, action); 
+                        break;
+                    case Action.Fall:
+                        Move(walkFCurve, walkVCurve, transform.position, - transform.up, tickDuration, trigger, action);
+                        fallSound.Play();
+                        break;
                     case Action.AboutFace:
                         transform.forward = -transform.forward;
                         break;
                     case Action.DontMove:
                         break;
                 }
-                yield return new WaitForSeconds(TickManager.TickDuration);
-            }
 
+                yield return new WaitForSeconds(tickDuration);
+            }
             yield return null;
         }
     }
@@ -80,24 +115,27 @@ public class Player : MonoBehaviour
         animator.Update(Time.deltaTime * animationScale);
     }
 
-    public void Move (Vector3 start, Vector3 delta, Action action)
+    public void Move(AnimationCurve f, AnimationCurve v, Vector3 start, Vector3 delta, float tickDuration, string trigger, Action action)
     {
         StartCoroutine(Routine()); IEnumerator Routine ()
         {
-            string trigger = "walk";
-            if (action == Action.JumpForward) trigger = "jump";
             animator.SetTrigger(trigger);
-
             Vector3 end = start + delta;
-            float duration = TickManager.TickDuration * movementTickPercent;
-            //animationScale = 1f / duration;
+            Vector3 directionStart = transform.forward;
+            Vector3 directionEnd = (end - start).WithY (0).normalized;
+
+            float duration = tickDuration * movementTickPercent;
+            Vector3 df = (end - start).normalized.WithY (0);
+            float dv = end.y - start.y;
 
             float percent = 0; while ((percent += Time.deltaTime / duration) < 1) {
-                Vector3 position = Vector3.Lerp (start, end, percent);
+                Vector3 position = start + df * f.Evaluate (percent) + Vector3.up * dv * v.Evaluate (percent);
+                model.forward = Vector3.Lerp(directionStart, directionEnd, rotationCurve.Evaluate(percent));
                 transform.position = position;
                 yield return null;
             }
             transform.position = end;
+            model.forward = directionEnd;
         }
     }
 
@@ -165,5 +203,11 @@ public class Player : MonoBehaviour
         {
             level.DrawCell(x + xo, y + yo, z + zo, level.walkableMap[x + xo, y + yo, z + zo] ? Color.red : Color.black);
         }
+    }
+
+    public void Event (string sound)
+    {
+        if (sound == "Step") stepSound.Play();
+        if (sound == "Jump") jumpSound.Play();
     }
 }
