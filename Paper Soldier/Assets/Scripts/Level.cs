@@ -110,6 +110,16 @@ public class Level : MonoBehaviour
         );
     }
 
+    public Vector3 GetCellBottomAt(Vector3 position)
+    {
+        Vector3 index = PositionToIndex (position);
+        return minPointRounded + new Vector3(
+            (index.x + 0.5f) * cellSize * dirX,
+            (index.y) * cellSize * dirY,
+            (index.z + 0.5f) * cellSize * dirZ
+        );
+    }
+
     public bool IsCellOccluded(int x, int y, int z)
     {
         float exi = cellExigence / 2;
@@ -147,8 +157,9 @@ public class Level : MonoBehaviour
     public void DrawCell(int x, int y, int z, Color color)
     {
         Gizmos.color = color;
-        Vector3 center = GetCellCenter(x, y, z) - Vector3.up * cellSize / 4;
+        Vector3 center = GetCellCenter(x, y, z);
         Gizmos.DrawCube(center, Vector3.one * 0.5f * cellSize);
+        Gizmos.DrawSphere(GetCellBottomAt(GetCellCenter(x, y, z)), 0.1f);
 
 #if UNITY_EDITOR
         Handles.color = new Color (color.r, color.g, color.b, 0.05f);

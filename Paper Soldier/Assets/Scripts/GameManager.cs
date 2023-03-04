@@ -66,7 +66,8 @@ public class GameManager : MonoBehaviour
     {
         Level level = g_levels[index];
         g_currentLevel = level;
-        g_player.transform.position = level.startPoint.position;
+        Vector3 gridBottomPos = g_currentLevel.GetCellBottomAt (level.startPoint.position);
+        g_player.transform.position = gridBottomPos;
         g_currentLevel.GenerateVoxel();
     }
 

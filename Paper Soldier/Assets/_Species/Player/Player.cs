@@ -10,9 +10,14 @@ public class Player : MonoBehaviour
     [Title ("PARAMETERS")]
     [Range(0f, 1f)] public float movementTickPercent = 0.5f;
 
+    [Title ("REFERENCES")]
+    public Animator animator;
+
     [Title ("DEBUG & RUNTIME")]
     public Level level;
     public bool isMoving;
+
+    float animationScale;
 
     IEnumerator Start ()
     {
@@ -70,12 +75,23 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void Update()
+    {
+        animator.Update(Time.deltaTime * animationScale);
+    }
+
     public void Move (Vector3 start, Vector3 delta, Action action)
     {
         StartCoroutine(Routine()); IEnumerator Routine ()
         {
+            string trigger = "walk";
+            if (action == Action.JumpForward) trigger = "jump";
+            animator.SetTrigger(trigger);
+
             Vector3 end = start + delta;
             float duration = TickManager.TickDuration * movementTickPercent;
+            //animationScale = 1f / duration;
+
             float percent = 0; while ((percent += Time.deltaTime / duration) < 1) {
                 Vector3 position = Vector3.Lerp (start, end, percent);
                 transform.position = position;
