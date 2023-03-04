@@ -10,20 +10,81 @@ public class Player : MonoBehaviour
     Vector3 directionForward;
     Vector3 directionLeft;
 
+    public enum Action
+    {
+        Forward,
+        Right,
+        Left,
+        JumpForward,
+        JumpRight,
+        JumpLeft,
+        DontMove
+    }
+
+    CellDatas[,,] Perceive(int width, int height, int depth)
+    {
+        CellDatas[,,] perseption = new CellDatas[width, height, depth];
+        Vector3 position = transform.position + directionForward; // Position in front of the character
+        for (int w=0; w<width; ++w) {
+            for (int h = 0; h < height; ++h) {
+                for (int d = 0; d < depth; ++d) {
+                    Vector3Int cell = level.PositionToIndex(position+(w-(int)(width/2))*transform.right+h*transform.up+d*transform.forward);
+                    perseption[w, h, d] = level.map[cell.x, cell.y, cell.z];
+                }
+            }
+        }
+        return perseption;
+    }
     IEnumerator Start ()
     {
         directionForward = transform.forward;
         directionLeft = -transform.right;
 
         while (true) {
-            if (GetAt(1, 0, 0, out Vector3 a) && GetAt(1, 0, 1, out Vector3 b)) {
-                transform.position = a;
+            Vector3Int indices = level.PositionToIndex(transform.position);
+            level.map[indices.x, indices.y, indices.z]++;
+            CellDatas[,,] perseption = Perceive(3, 2, 1);
+            Action action = Action.DontMove;
+
+            if (perseption[1, 0, 0] == CellDatas.Empty && perseption[1, 1, 0] == CellDatas.Empty)
+            {
+                action = Action.Forward;
+            } else if (perseption[1,1,0]==CellDatas.Solid && perseption[0, 1, 0] == CellDatas.Solid && perseption[2, 1, 0] == CellDatas.Empty)
+            {
+                action = Action.Right;
+            } else if (perseption[1, 1, 0] == CellDatas.Solid && perseption[0, 1, 0] == CellDatas.Empty && perseption[2, 1, 0] == CellDatas.Solid)
+            {
+                action = Action.Left;
+            } else if (perseption[1, 0, 0] == CellDatas.Solid && perseption[1, 1, 0] == CellDatas.Empty)
+            {
+                action = Action.JumpForward;
             }
-            else if (GetAt(0, 0, 1, out Vector3 c)) {
-                transform.position = c;
-            }
-            else if (GetAt(-1, 0, 0, out Vector3 d)) {
-                transform.position = d;
+
+            switch (action)
+            {
+                case Action.Forward:
+                    transform.position += transform.forward;
+                    break;
+                case Action.Right:
+                    transform.position += transform.right;
+                    break;
+                case Action.Left:
+                    transform.position -= transform.right;
+                    break;
+                case Action.JumpForward:
+                    transform.position += transform.up;
+                    transform.position += transform.forward;
+                    break;
+                case Action.JumpRight:
+                    transform.position += transform.up;
+                    transform.position += transform.right;
+                    break;
+                case Action.JumpLeft:
+                    transform.position += transform.up;
+                    transform.position -= transform.right;
+                    break;
+                case Action.DontMove:
+                    break;
             }
             yield return new WaitForSeconds(0.5f);
         }
