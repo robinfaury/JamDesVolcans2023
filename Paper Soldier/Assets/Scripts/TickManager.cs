@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class TickManager : MonoBehaviour
 {
@@ -23,6 +24,10 @@ public class TickManager : MonoBehaviour
             }
             TickDuration = tickDuration;
         }
+
+        if (Keyboard.current.digit1Key.wasPressedThisFrame) Time.timeScale = 1;
+        if (Keyboard.current.digit2Key.wasPressedThisFrame) Time.timeScale = 2;
+        if (Keyboard.current.digit3Key.wasPressedThisFrame) Time.timeScale = 4;
     }
 
     public void StartTicking ()

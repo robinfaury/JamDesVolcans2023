@@ -25,7 +25,7 @@ public class GameCamera : MonoBehaviour
             Vector3 playerPath = g_currentLevel.endPoint.position - g_currentLevel.startPoint.position;
             Vector3 playerPos = g_player.transform.position - g_currentLevel.startPoint.position;
             float realRatio = playerPos.magnitude / playerPath.magnitude;
-            dolly.m_PathPosition = realRatio; // Mathf.Lerp(dolly.m_PathPosition, realRatio, Time.smoothDeltaTime);
+            dolly.m_PathPosition = Mathf.Lerp(dolly.m_PathPosition, realRatio, Time.smoothDeltaTime / 10); 
         }
     }
 }

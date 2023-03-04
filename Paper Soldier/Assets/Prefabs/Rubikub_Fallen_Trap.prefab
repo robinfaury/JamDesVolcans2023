@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5903703535367940216}
   - component: {fileID: 7368434912176498653}
   - component: {fileID: 4730195550887809815}
+  - component: {fileID: 3442232097775263670}
   m_Layer: 0
   m_Name: Rubikub_Fallen_Trap
   m_TagString: Untagged
@@ -83,3 +84,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &3442232097775263670
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6531903613242094274}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.0768828, y: 2.0953505, z: 2.0959759}
+  m_Center: {x: 0.00000005960467, y: -0.0000009536743, z: 0.00000005960466}
