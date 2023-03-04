@@ -76,12 +76,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aad540d41ba454a40afdff15ccbae51e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  level: {fileID: 0}
   prefabBullet: {fileID: 6696544169093719544, guid: 8f82afdc1e255e84891a17fb8c467976,
     type: 3}
   StrawPivot: {fileID: 1797964431974305459}
   StrawOutput: {fileID: 1797964431152307223}
+  sarbacane: {fileID: 11400000, guid: 68130954782ab8349a9a083a6c4ac5b8, type: 2}
   startScale: {x: 1, y: 1, z: 1}
   endScale: {x: 16, y: 16, z: 16}
+  timeBetweenShot: 0
 --- !u!1 &3277416039868906060
 GameObject:
   m_ObjectHideFlags: 0

@@ -15,7 +15,8 @@ public class ThrowBullet : MonoBehaviour
     public Transform StrawPivot;
     public Transform StrawOutput;
 
-    private Transform bulletPreview; 
+    private Transform bulletPreview;
+    public Sound sarbacane;
 
     new Camera camera;
 
@@ -73,6 +74,7 @@ public class ThrowBullet : MonoBehaviour
     IEnumerator ThrowingBullet(Vector3 targetPosition, Vector3Int cell,bool isConstruction)
     {
         isThrowing = true;
+        sarbacane.Play();
         lastTimeShot = Time.time;
         float startTime = Time.time;
         Vector3 startposition = StrawOutput.position;
