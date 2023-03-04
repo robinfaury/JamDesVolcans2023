@@ -1,0 +1,4 @@
+repository "Paper Soldier@Riding_Seas_Old@cloud"
+  path "/"
+    br "/main"
+    co "/main"
