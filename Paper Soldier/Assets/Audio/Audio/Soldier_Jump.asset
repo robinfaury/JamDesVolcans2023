@@ -10,47 +10,36 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b60aff6cebb42f6419a8796997b0ab4a, type: 3}
-  m_Name: Explosion
+  m_Name: Soldier_Jump
   m_EditorClassIdentifier: 
   audioMixer: {fileID: 0}
   volume: 1
   pitch: 1
   soundClips:
   - clips:
-    - {fileID: 8300000, guid: fdde142e6c49ba148a5e507a0c2a8bb7, type: 3}
+    - {fileID: 8300000, guid: da1aa149942c8724bb37cfab4a02368c, type: 3}
     volume:
-      random: 1
-      defaultValue: 1
-      minValue: 0.8
-      maxValue: 0.8
-    pitch:
       random: 1
       defaultValue: 1
       minValue: 0.8
       maxValue: 1.2
-    playProbability: 1
-  - clips:
-    - {fileID: 8300000, guid: c6f1974b389f59b40a8e5d25232a919b, type: 3}
-    volume:
-      random: 1
-      defaultValue: 1
-      minValue: 0.8
-      maxValue: 0.8
     pitch:
       random: 1
+      defaultValue: 1
+      minValue: 0.9
+      maxValue: 1.1
+    playProbability: 1
+  - clips:
+    - {fileID: 8300000, guid: 24c651c09e072d546a18bcda34ad6f66, type: 3}
+    - {fileID: 8300000, guid: 511aedfd4dc09b84a88874819832b358, type: 3}
+    - {fileID: 8300000, guid: 2012f24c52f6ab849b4ab3589dcbc898, type: 3}
+    volume:
+      random: 0
       defaultValue: 1
       minValue: 0.8
       maxValue: 1.2
-    playProbability: 1
-  - clips:
-    - {fileID: 8300000, guid: e35dc7bede85a8545a61cb29451ba8af, type: 3}
-    volume:
-      random: 1
-      defaultValue: 1
-      minValue: 0.8
-      maxValue: 0.8
     pitch:
-      random: 1
+      random: 0
       defaultValue: 1
       minValue: 0.8
       maxValue: 1.2

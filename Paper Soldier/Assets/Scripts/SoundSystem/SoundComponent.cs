@@ -13,6 +13,7 @@ public class SoundComponent
     public List<AudioClip> clips = new List<AudioClip> ();
     public RFloat volume = new RFloat();
     public RFloat pitch = new RFloat();
+    public float playProbability = 1;
 
     public SoundComponent () { }
 

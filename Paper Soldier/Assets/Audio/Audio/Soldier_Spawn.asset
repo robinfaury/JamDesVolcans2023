@@ -10,23 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b60aff6cebb42f6419a8796997b0ab4a, type: 3}
-  m_Name: Sarbacane
+  m_Name: Soldier_Spawn
   m_EditorClassIdentifier: 
   audioMixer: {fileID: 0}
   volume: 1
   pitch: 1
   soundClips:
   - clips:
-    - {fileID: 8300000, guid: f93bdd55cc7c3ac4fbdc56f98dc91166, type: 3}
-    - {fileID: 8300000, guid: 957b8e4a007e29e4a880f4e6602c7f0e, type: 3}
-    - {fileID: 8300000, guid: 4fb021c19a0a9184da43f9d811017ace, type: 3}
-    - {fileID: 8300000, guid: e35dc7bede85a8545a61cb29451ba8af, type: 3}
-    - {fileID: 8300000, guid: 11da40e6ac84bb346bc46058ad5293b3, type: 3}
-    - {fileID: 8300000, guid: 5641860bedc50c447a4087b834c02df1, type: 3}
-    - {fileID: 8300000, guid: 3ec6804684c23f44797487d51baba15f, type: 3}
-    - {fileID: 8300000, guid: 7846c75e42cc6b14bb97d8ce7c188476, type: 3}
+    - {fileID: 8300000, guid: 3f478d1d8be4e994ba2c1e5b9c08161a, type: 3}
     volume:
-      random: 1
+      random: 0
       defaultValue: 1
       minValue: 0.8
       maxValue: 1.2

@@ -46,7 +46,8 @@ public class SoundSource : MonoBehaviour
         startPitch = soundClip.pitch.sort;
         player.pitch = sound.pitch * startPitch;
 
-        player.Play();
+        if (Random.value < soundClip.playProbability)
+            player.Play();
 
         if (stopTimer != null) StopCoroutine(stopTimer);
         stopTimer = StopTimer(player.clip.length);
