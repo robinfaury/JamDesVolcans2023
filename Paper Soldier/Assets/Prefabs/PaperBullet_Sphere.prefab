@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 6696544169093719544}
   - component: {fileID: 7728525387164314205}
   - component: {fileID: 5523044464237780631}
+  - component: {fileID: -8656404756745249056}
+  - component: {fileID: 8718466570357897395}
   m_Layer: 0
   m_Name: PaperBullet_Sphere
   m_TagString: Untagged
@@ -83,3 +85,31 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!135 &-8656404756745249056
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6315515477992619842}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.036250085
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8718466570357897395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6315515477992619842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6a019abc6082c2478f52ee6362ecac8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CubeBulletPrefab: {fileID: 9059963326549219663, guid: 63dde6596e579ad4298b0dc90efd02c1,
+    type: 3}
+  timealive: 10

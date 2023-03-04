@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b60aff6cebb42f6419a8796997b0ab4a, type: 3}
+  m_Name: Hit
+  m_EditorClassIdentifier: 
+  audioMixer: {fileID: 0}
+  volume: 1
+  pitch: 1
+  soundClips:
+  - clips:
+    - {fileID: 8300000, guid: edc9c83290f8ccc41b9c12758e381932, type: 3}
+    - {fileID: 8300000, guid: 33b0deac01ae53e4ba1235137d5cca7d, type: 3}
+    - {fileID: 8300000, guid: 0bf146178c9b5c44db848fdd1850d7c8, type: 3}
+    - {fileID: 8300000, guid: af9a3b0ef2948044bb7d0f94ab62ced8, type: 3}
+    - {fileID: 8300000, guid: c6f1974b389f59b40a8e5d25232a919b, type: 3}
+    - {fileID: 8300000, guid: efb9e63789f6e0b4aa0aab8b3a9282ae, type: 3}
+    - {fileID: 8300000, guid: 674e3a209dd37e34497566031cf05b7c, type: 3}
+    volume:
+      random: 1
+      defaultValue: 1
+      minValue: 0.8
+      maxValue: 1.2
+    pitch:
+      random: 1
+      defaultValue: 1
+      minValue: 0.9
+      maxValue: 1.1
+  sources:
+  - {fileID: 0}
