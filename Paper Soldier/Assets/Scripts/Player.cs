@@ -38,7 +38,7 @@ public class Player : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (level.walkMap == null) return;
+        //if (level.walkMap == null) return;
         int x = Mathf.Clamp(Mathf.FloorToInt((transform.position.x - level.minPoint.position.x) / level.cellSize), 0, level.mapSizeX - 1);
         int y = Mathf.Clamp(Mathf.FloorToInt((transform.position.y - level.minPoint.position.y) / level.cellSize), 0, level.mapSizeY - 1);
         int z = Mathf.Clamp(Mathf.FloorToInt((transform.position.z - level.minPoint.position.z) / level.cellSize), 0, level.mapSizeZ - 1);
@@ -46,7 +46,7 @@ public class Player : MonoBehaviour
         DrawAt(0, 0, 1);
         void DrawAt (int xo, int yo, int zo)
         {
-            level.DrawCell(x + xo, y + yo, z + zo, level.walkMap[x + xo, y + yo, z + zo] ? Color.red : Color.black);
+            level.DrawCell(x + xo, y + yo, z + zo, level.walkableMap[x + xo, y + yo, z + zo] ? Color.red : Color.black);
         }
     }
 }
