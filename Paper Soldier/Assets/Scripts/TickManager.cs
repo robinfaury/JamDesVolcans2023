@@ -7,7 +7,8 @@ public class TickManager : MonoBehaviour
 
     [Range(0.1f, 1)] public float tickDuration = 0.5f;
 
-    public static System.Action<float> onTick;
+    public static System.Action onTick;
+    public static float TickDuration;
 
     float timeBank;
 
@@ -20,8 +21,9 @@ public class TickManager : MonoBehaviour
     {
         timeBank += Time.deltaTime;
         while (timeBank > tickDuration) {
-            onTick?.Invoke(tickDuration);
+            onTick?.Invoke();
             timeBank -= tickDuration;
         }
+        TickDuration = tickDuration;
     }
 }
