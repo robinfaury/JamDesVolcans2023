@@ -44,8 +44,6 @@ public class Player : MonoBehaviour
         int y = level.ConvertCoordY (transform.position.y);
         int z = level.ConvertCoordZ (transform.position.z);
 
-        Debug.Log(x+ " " + y + " " + z);
-
         DrawAt(0, 0, 1);
         void DrawAt (int xo, int yo, int zo)
         {
