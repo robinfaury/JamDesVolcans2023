@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Player : MonoBehaviour
 {
@@ -15,13 +16,15 @@ public class Player : MonoBehaviour
         JumpForward,
         JumpRight,
         JumpLeft,
+        Fall,
+        AboutFace,
         DontMove
     }
 
     CellDatas[,,] Perceive(int width, int height, int depth)
     {
         CellDatas[,,] perseption = new CellDatas[width, height, depth];
-        Vector3 position = transform.position + transform.forward; // Position in front of the character
+        Vector3 position = transform.position;
         for (int w=0; w<width; ++w) {
             for (int h = 0; h < height; ++h) {
                 for (int d = 0; d < depth; ++d) {
@@ -32,29 +35,52 @@ public class Player : MonoBehaviour
         }
         return perseption;
     }
+    bool HasPath(CellDatas[,,] perseption)
+    {
+        if (perseption[1, 1, 1] == CellDatas.Empty)
+        {
+            return true;
+        }
+        return perseption[0, 1, 1] == CellDatas.Empty;
+    }
     IEnumerator Start ()
     {
         transform.position = level.startPoint.transform.position;
         while (true)
         {
-            CellDatas[,,] perseption = Perceive(3, 2, 1);
             Action action = Action.DontMove;
-
-            if (perseption[1, 0, 0] == CellDatas.Empty && perseption[1, 1, 0] == CellDatas.Empty)
+            int perseption_width = 5;
+            int character_index_x = perseption_width/2;
+            CellDatas[,,] perseption = Perceive(perseption_width, 2, 2);
+            Vector3Int current_index_cell = level.PositionToIndex(transform.position);
+            if (current_index_cell.y == 0)
             {
-                action = Action.Forward;
+                action = Action.Fall;
+            } else
+            {
+                if (level.map[current_index_cell.x, current_index_cell.y - 1, current_index_cell.z] == CellDatas.Empty)
+                {
+                    action = Action.Fall;
+                }
             }
-            else if (perseption[1, 1, 0] == CellDatas.Solid && perseption[0, 1, 0] == CellDatas.Solid && perseption[2, 1, 0] == CellDatas.Empty)
+            if (action == Action.DontMove)
             {
-                action = Action.Right;
+                if (perseption[character_index_x, 1, 1] == CellDatas.Empty)
+                {
+                    action = perseption[character_index_x, 0, 1] == CellDatas.Empty ? Action.Forward : Action.JumpForward;
+                }
+                else if (perseption[character_index_x - 1, 1, 1] == CellDatas.Empty && perseption[character_index_x - 1, 1, 0] == CellDatas.Empty)
+                {
+                    action = perseption[character_index_x - 1, 0, 0] == CellDatas.Empty ? Action.Left : Action.JumpLeft;
+                }
+                else if (perseption[character_index_x + 1, 1, 1] == CellDatas.Empty && perseption[character_index_x + 1, 1, 0] == CellDatas.Empty)
+                {
+                    action = perseption[character_index_x + 1, 0, 0] == CellDatas.Empty ? Action.Right : Action.JumpRight;
+                }
             }
-            else if (perseption[1, 1, 0] == CellDatas.Solid && perseption[0, 1, 0] == CellDatas.Empty && perseption[2, 1, 0] == CellDatas.Solid)
+            if (action == Action.DontMove)
             {
-                action = Action.Left;
-            }
-            else if (perseption[1, 0, 0] == CellDatas.Solid && perseption[1, 1, 0] == CellDatas.Empty)
-            {
-                action = Action.JumpForward;
+                action = Action.AboutFace;
             }
 
             switch (action)
@@ -79,6 +105,12 @@ public class Player : MonoBehaviour
                 case Action.JumpLeft:
                     transform.position += transform.up;
                     transform.position -= transform.right;
+                    break;
+                case Action.Fall:
+                    transform.position -= transform.up;
+                    break;
+                case Action.AboutFace:
+                    transform.forward = -transform.forward;
                     break;
                 case Action.DontMove:
                     break;
