@@ -9,7 +9,6 @@ using static GameManager;
 
 public class ThrowBullet : MonoBehaviour
 {
-    public Level level;
 
     public Transform prefabBullet;
     public Transform StrawPivot;
@@ -45,14 +44,15 @@ public class ThrowBullet : MonoBehaviour
     Vector3 point;
     public void UpdateThrowBullet ()
     {
+        if (g_currentLevel == null) return;
         Ray ray = camera.ScreenPointToRay(Mouse.current.position.ReadValue());
         if (Physics.SphereCast(ray, g_currentLevel.cellSize * 0.2f, out RaycastHit hitInfo)) {
             //Set straw orientation
             StrawPivot.forward = StrawPivot.position - hitInfo.point;
             point = hitInfo.point;
             //Set preview and precompute voxelPos
-            Vector3Int index = level.PositionToIndex(hitInfo.point + Vector3.up * g_currentLevel.cellSize / 4);
-            Vector3 cellCenter = level.GetCellCenter(index.x, index.y, index.z);
+            Vector3Int index = g_currentLevel.PositionToIndex(hitInfo.point + Vector3.up * g_currentLevel.cellSize / 4);
+            Vector3 cellCenter = g_currentLevel.GetCellCenter(index.x, index.y, index.z);
             if (g_currentLevel.map[index.x, index.y, index.z] == CellDatas.Empty) {
                 bulletPreview.gameObject.SetActive(true);
                 bulletPreview.position = Vector3.Lerp(bulletPreview.position, cellCenter, .4f);
@@ -84,7 +84,7 @@ public class ThrowBullet : MonoBehaviour
         Transform bullet = Instantiate<Transform>(prefabBullet, StrawOutput.position, Quaternion.identity);
 
         
-        bullet.gameObject.GetComponent<Bullet>().Init(cell, level, isConstruction);
+        bullet.gameObject.GetComponent<Bullet>().Init(cell, g_currentLevel, isConstruction);
 
         float lDuration = .5f;
         float lTime = 0f;
@@ -100,7 +100,7 @@ public class ThrowBullet : MonoBehaviour
 
         bullet.position = targetPosition;
         bullet.localScale = endScale;
-        level.map[cell.x, cell.y, cell.z] = CellDatas.Solid;
+        g_currentLevel.map[cell.x, cell.y, cell.z] = CellDatas.Solid;
 
         bullet.gameObject.GetComponent<Bullet>().OnBulletIsOnTarget();
 

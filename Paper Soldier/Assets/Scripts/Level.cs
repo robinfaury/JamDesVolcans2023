@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 using Sirenix.OdinInspector;
 using static GameManager;
 
@@ -19,6 +20,7 @@ public class Level : MonoBehaviour
     [Min(0.5f)] public float cellSize = 2;
     [Range(0.1f, 1f)] public float cellExigence = 0.5f;
     public LayerMask occlusionLayer;
+    public CinemachineVirtualCamera virtualCamera;
 
     [Title ("DEBUGGIN & RUNTIME")]
     public bool showGizmos;
@@ -42,6 +44,11 @@ public class Level : MonoBehaviour
     public Vector3 cellHeight;
 
     // ========================================================================= GENERATION
+
+    private void Awake()
+    {
+        virtualCamera.gameObject.SetActive(false);
+    }
 
     [Button("GenerateVoxel")]
     public void GenerateVoxel()

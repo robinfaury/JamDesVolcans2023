@@ -213,7 +213,6 @@ MonoBehaviour:
   eventListener: {fileID: 1625325465}
   animator: {fileID: 1557412198131475406}
   model: {fileID: 4969616141870115817}
-  level: {fileID: 0}
   isMoving: 0
 --- !u!1001 &4969616143875317343
 PrefabInstance:

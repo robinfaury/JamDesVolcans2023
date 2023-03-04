@@ -19,9 +19,11 @@ public class GameManager : MonoBehaviour
     [Title("REFERENCES GLOBALES")]
     public Player player;
     public TickManager tickManager;
+    public GameCamera gameCamera;
 
     public static int g_currentLevelIndex;
     public static Level g_currentLevel;
+    public static GameCamera g_gameCamera;
 
     public static List<Level> g_levels;
     public static Player g_player;
@@ -38,6 +40,7 @@ public class GameManager : MonoBehaviour
         g_currentLevelIndex = 0;
         g_gameManager = this;
         g_levels = levels;
+        g_gameCamera = gameCamera;
     }
 
     void Start()
@@ -71,9 +74,12 @@ public class GameManager : MonoBehaviour
 
         Level level = g_levels[index];
         g_currentLevel = level;
+        g_currentLevel.GenerateVoxel();
+        g_gameCamera.SetVCam(g_currentLevel.virtualCamera);
+
         Vector3 gridBottomPos = g_currentLevel.GetCellBottomAt (level.startPoint.position);
         g_player.transform.position = gridBottomPos;
-        g_currentLevel.GenerateVoxel();
+        g_player.transform.forward = (level.endPoint.position - level.startPoint.position).WithY(0).normalized;
 
         g_onPlayerChanged += g_currentLevel.OnPlayerPositionChanged;
     }
@@ -86,16 +92,16 @@ public class GameManager : MonoBehaviour
             g_tickManager.StopTicking();
             FadeFromTo(0, 1, transitionDelay);
             yield return new WaitForSeconds(transitionDelay);
-            LoadLevel(g_currentLevelIndex++);
-            FadeFromTo(1, 0, transitionDelay);
+
+            g_currentLevelIndex++;
+            LoadLevel(g_currentLevelIndex);
             yield return new WaitForSeconds(transitionDelay);
 
+            FadeFromTo(1, 0, transitionDelay);
             g_player.StartMovement();
             g_tickManager.StartTicking();
             canvasGroup.alpha = 0;
             coucouSound.Play();
-
-            yield return new WaitForEndOfFrame();
             g_isGamePlaying = true;
         }
     }

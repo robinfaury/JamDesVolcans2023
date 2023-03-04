@@ -25,16 +25,13 @@ public class Player : MonoBehaviour
     public Transform model;
 
     [Title ("DEBUG & RUNTIME")]
-    public Level level;
     public bool isMoving;
 
     float animationScale;
 
     IEnumerator Start ()
     {
-        transform.position = level.startPoint.transform.position;
         eventListener.onEvent += Event;
-
         while (true) {
             while (isMoving) {
 
@@ -42,13 +39,13 @@ public class Player : MonoBehaviour
                 int perseption_width = 5;
                 int character_index_x = perseption_width/2;
                 CellDatas[,,] perseption = Perceive(perseption_width, 2, 2);
-                Vector3Int current_index_cell = level.PositionToIndex(transform.position);
+                Vector3Int current_index_cell = g_currentLevel.PositionToIndex(transform.position);
 
                 if (current_index_cell.y == 0) {
                     action = Action.Fall;
                 }
                 else {
-                    if (level.map[current_index_cell.x, current_index_cell.y - 1, current_index_cell.z] == CellDatas.Empty) {
+                    if (g_currentLevel.map[current_index_cell.x, current_index_cell.y - 1, current_index_cell.z] == CellDatas.Empty) {
                         action = Action.Fall;
                     }
                 }
@@ -175,8 +172,8 @@ public class Player : MonoBehaviour
         for (int w = 0; w < width; ++w) {
             for (int h = 0; h < height; ++h) {
                 for (int d = 0; d < depth; ++d) {
-                    Vector3Int cell = level.PositionToIndex(position+(w-(int)(width/2))*transform.right+h*transform.up+d*transform.forward);
-                    perseption[w, h, d] = level.map[cell.x, cell.y, cell.z];
+                    Vector3Int cell = g_currentLevel.PositionToIndex(position+(w-(int)(width/2))*transform.right+h*transform.up+d*transform.forward);
+                    perseption[w, h, d] = g_currentLevel.map[cell.x, cell.y, cell.z];
                 }
             }
         }
@@ -206,11 +203,11 @@ public class Player : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (level == null || level.walkableMap == null) return;
+        if (g_currentLevel == null || g_currentLevel.walkableMap == null) return;
 
-        int x = level.ConvertCoordX (transform.position.x);
-        int y = level.ConvertCoordY (transform.position.y);
-        int z = level.ConvertCoordZ (transform.position.z);
+        int x = g_currentLevel.ConvertCoordX (transform.position.x);
+        int y = g_currentLevel.ConvertCoordY (transform.position.y);
+        int z = g_currentLevel.ConvertCoordZ (transform.position.z);
 
         Gizmos.DrawSphere(a, 0.2f);
         Gizmos.DrawSphere(b, 0.2f);
@@ -218,7 +215,7 @@ public class Player : MonoBehaviour
         DrawAt(0, 0, 1);
         void DrawAt(int xo, int yo, int zo)
         {
-            level.DrawCell(x + xo, y + yo, z + zo, level.walkableMap[x + xo, y + yo, z + zo] ? Color.red : Color.black);
+            g_currentLevel.DrawCell(x + xo, y + yo, z + zo, g_currentLevel.walkableMap[x + xo, y + yo, z + zo] ? Color.red : Color.black);
         }
     }
 
