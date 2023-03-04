@@ -44,6 +44,11 @@ public class Level : MonoBehaviour
 
     // ========================================================================= GENERATION
 
+    void Awake()
+    {
+        GenerateVoxel();
+    }
+
     [Button("GenerateVoxel")]
     public void GenerateVoxel()
     {
@@ -96,7 +101,6 @@ public class Level : MonoBehaviour
     int cacheX, cacheY, cacheZ;
     public bool CanWalkAt(Vector3 pos)
     {
-        if (map == null) GenerateVoxel();
         cacheX = Mathf.FloorToInt((pos.x - minPointRounded.x) / cellSize);
         cacheY = Mathf.FloorToInt((pos.y - minPointRounded.y) / cellSize);
         cacheZ = Mathf.FloorToInt((pos.z - minPointRounded.z) / cellSize);
