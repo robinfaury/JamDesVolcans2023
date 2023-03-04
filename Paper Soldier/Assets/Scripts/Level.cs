@@ -108,7 +108,7 @@ public class Level : MonoBehaviour
 
     // ========================================================================= TOOLS
 
-    Vector3 GetCellCenter(int x, int y, int z)
+    public Vector3 GetCellCenter(int x, int y, int z)
     {
         return minPointRounded + new Vector3(
             (x + 0.5f) * cellSize * dirX,
