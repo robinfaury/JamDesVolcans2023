@@ -38,10 +38,13 @@ public class Player : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        //if (level.walkMap == null) return;
-        int x = Mathf.Clamp(Mathf.FloorToInt((transform.position.x - level.minPoint.position.x) / level.cellSize), 0, level.mapSizeX - 1);
-        int y = Mathf.Clamp(Mathf.FloorToInt((transform.position.y - level.minPoint.position.y) / level.cellSize), 0, level.mapSizeY - 1);
-        int z = Mathf.Clamp(Mathf.FloorToInt((transform.position.z - level.minPoint.position.z) / level.cellSize), 0, level.mapSizeZ - 1);
+        if (level == null || level.walkableMap == null) return;
+
+        int x = level.ConvertCoordX (transform.position.x);
+        int y = level.ConvertCoordY (transform.position.y);
+        int z = level.ConvertCoordZ (transform.position.z);
+
+        Debug.Log(x+ " " + y + " " + z);
 
         DrawAt(0, 0, 1);
         void DrawAt (int xo, int yo, int zo)

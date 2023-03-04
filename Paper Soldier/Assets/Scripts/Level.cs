@@ -27,28 +27,28 @@ public class Level : MonoBehaviour
     public CellDatas [,,] map;
     public bool [,,] walkableMap;
 
-    Vector3 maxPointRounded;
-    Vector3 minPointRounded;
-    float dirX;
-    float dirY;
-    float dirZ;
-    float sizeX;
-    float sizeY;
-    float sizeZ;
+    public Vector3 maxPointRounded;
+    public Vector3 minPointRounded;
+    public int dirX;
+    public int dirY;
+    public int dirZ;
+    public float sizeX;
+    public float sizeY;
+    public float sizeZ;
     public int mapSizeX;
     public int mapSizeY;
     public int mapSizeZ;
-    Vector3 cellWidth;
-    Vector3 cellLength;
-    Vector3 cellHeight;
+    public Vector3 cellWidth;
+    public Vector3 cellLength;
+    public Vector3 cellHeight;
 
     // ========================================================================= GENERATION
 
     [Button("GenerateVoxel")]
     public void GenerateVoxel()
     {
-        maxPointRounded = new Vector3(Mathf.CeilToInt(maxPoint.position.x), Mathf.CeilToInt(maxPoint.position.y), Mathf.CeilToInt(maxPoint.position.z));
-        minPointRounded = new Vector3(Mathf.CeilToInt(minPoint.position.x), Mathf.CeilToInt(minPoint.position.y), Mathf.CeilToInt(minPoint.position.z));
+        maxPointRounded = new Vector3(Mathf.FloorToInt(maxPoint.position.x), Mathf.FloorToInt(maxPoint.position.y), Mathf.FloorToInt(maxPoint.position.z));
+        minPointRounded = new Vector3(Mathf.FloorToInt(minPoint.position.x), Mathf.FloorToInt(minPoint.position.y), Mathf.FloorToInt(minPoint.position.z));
 
         sizeX = Mathf.Abs (maxPointRounded.x - minPointRounded.x);
         sizeY = Mathf.Abs (maxPointRounded.y - minPointRounded.y);
@@ -153,9 +153,27 @@ public class Level : MonoBehaviour
         Gizmos.DrawCube(center, Vector3.one * 0.5f * cellSize);
 
 #if UNITY_EDITOR
-        Handles.color = new Color (color.r, color.g, color.b, 0.3f);
+        Handles.color = new Color (color.r, color.g, color.b, 0.05f);
         Handles.DrawWireCube(center, Vector3.one);
 #endif
+    }
+
+    public int ConvertCoordX (float x)
+    {
+        float dist = Mathf.Abs (x - minPointRounded.x);
+        return Mathf.Clamp (Mathf.FloorToInt(dist / cellSize), 0, mapSizeX - 1);
+    }
+
+    public int ConvertCoordY(float y)
+    {
+        float dist = Mathf.Abs (y - minPointRounded.y);
+        return Mathf.Clamp(Mathf.FloorToInt(dist / cellSize), 0, mapSizeY - 1);
+    }
+
+    public int ConvertCoordZ(float z)
+    {
+        float dist = Mathf.Abs (z - minPointRounded.z);
+        return Mathf.Clamp(Mathf.FloorToInt(dist / cellSize), 0, mapSizeZ - 1);
     }
 }
 
