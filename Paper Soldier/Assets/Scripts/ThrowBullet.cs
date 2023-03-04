@@ -55,7 +55,7 @@ public class ThrowBullet : MonoBehaviour
             Vector3 cellCenter = level.GetCellCenter(index.x, index.y, index.z);
             if (g_currentLevel.map[index.x, index.y, index.z] == CellDatas.Empty) {
                 bulletPreview.gameObject.SetActive(true);
-                bulletPreview.position = cellCenter;
+                bulletPreview.position = Vector3.Lerp(bulletPreview.position, cellCenter, .4f);
 
                 //throw bullet
                 if ((Mouse.current.leftButton.wasPressedThisFrame || Mouse.current.rightButton.wasPressedThisFrame)
