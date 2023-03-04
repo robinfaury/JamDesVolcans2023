@@ -175,6 +175,14 @@ public class Level : MonoBehaviour
         float dist = Mathf.Abs (z - minPointRounded.z);
         return Mathf.Clamp(Mathf.FloorToInt(dist / cellSize), 0, mapSizeZ - 1);
     }
+
+    public Vector3Int PositionToIndex(Vector3 position)
+    {
+        return new Vector3Int(
+            ConvertCoordX(position.x),
+            ConvertCoordY(position.y),
+            ConvertCoordZ(position.z));
+    }
 }
 
 public enum CellDatas
