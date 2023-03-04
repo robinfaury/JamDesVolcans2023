@@ -2,34 +2,38 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Cinemachine;
 
 [RequireComponent (typeof (Camera))]
 public class GameCamera : MonoBehaviour
 {
+    public CinemachineVirtualCamera vCam;
+    public Player player;
+    public Level level;
+    private CinemachineTrackedDolly dolly;
 
-    public Transform throwModel;
-    public Transform bullet;
-
-    Plane plane;
-    new Camera camera;
-
-    public void Start()
+    private void Start()
     {
-        plane = new Plane (Vector3.up, Vector3.zero);
-        camera = GetComponent<Camera>();
+        dolly = vCam.GetCinemachineComponent<CinemachineTrackedDolly>();
+
     }
 
-    public void Update ()
+    public void Update()
     {
-        Ray ray = camera.ScreenPointToRay (Mouse.current.position.ReadValue());
-        plane.Raycast(ray, out float dist);
-        Vector3 groundPos = ray.GetPoint (dist);
-        Vector3 dir = (groundPos - transform.position).normalized;
-        throwModel.transform.forward = dir;
+        if (dolly != null)
+        {
+            Vector3 playerPath = level.endPoint.position - level.startPoint.position;
+            Vector3 playerPos = player.transform.position - level.startPoint.position;
+            float realRatio = playerPos.sqrMagnitude / playerPath.sqrMagnitude;
 
-        if (Mouse.current.leftButton.wasPressedThisFrame) {
-            Transform inst = Instantiate<Transform>(bullet);
-            inst.position = groundPos;
+            dolly.m_PathPosition = realRatio; // Mathf.Lerp(dolly.m_PathPosition, realRatio, Time.smoothDeltaTime);
         }
+
+
     }
+
+
+
+
+
 }

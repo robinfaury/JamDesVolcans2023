@@ -21,10 +21,10 @@ public class Bullet : MonoBehaviour
 
     private bool isDestructionBullet = false;
 
-    public void Init(Vector3Int cell, Level refLevel)
+    public void Init(Vector3Int cell, Level refLevel, bool isConstruction)
     {
         Renderer render = GetComponent<Renderer>();
-        if (Keyboard.current.aKey.isPressed)
+        if (!isConstruction)
         {
             render.material.color = Color.red;
             timealive = 2;
@@ -45,11 +45,8 @@ public class Bullet : MonoBehaviour
 
     public void CheckNeighbours()
     {
-
-
         if(isDestructionBullet)
         {
-            bool sphereToCube = false;
             List<Bullet> bulletToDestroy = new List<Bullet>();
             for (int i = 0; i < allBullets.Count; i++)
             {
@@ -79,7 +76,6 @@ public class Bullet : MonoBehaviour
             if (sphereToCube)
                 SphereToCube();
         }
-       
     }
 
     private bool AreNeighbours(Bullet a, Bullet b)

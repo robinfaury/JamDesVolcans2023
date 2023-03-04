@@ -44,24 +44,23 @@ public class ThrowBullet : MonoBehaviour
     public void UpdateThrowBullet ()
     {
         Ray ray = camera.ScreenPointToRay(Mouse.current.position.ReadValue());
-        if (Physics.SphereCast(ray, g_currentLevel.cellSize * 0.3f, out RaycastHit hitInfo)) {
+        if (Physics.SphereCast(ray, g_currentLevel.cellSize * 0.1f, out RaycastHit hitInfo)) {
             //Set straw orientation
             StrawPivot.forward = StrawPivot.position - hitInfo.point;
             point = hitInfo.point;
             //Set preview and precompute voxelPos
-            Vector3Int index = level.PositionToIndex(hitInfo.point + Vector3.one * g_currentLevel.cellSize / 2);
+            Vector3Int index = level.PositionToIndex(hitInfo.point + Vector3.up * g_currentLevel.cellSize / 2);
             Vector3 cellCenter = level.GetCellCenter(index.x, index.y, index.z);
             if (g_currentLevel.map[index.x, index.y, index.z] == CellDatas.Empty) {
                 bulletPreview.gameObject.SetActive(true);
                 bulletPreview.position = cellCenter;
 
                 //throw bullet
-                if (Mouse.current.leftButton.wasPressedThisFrame
+                if ((Mouse.current.leftButton.wasPressedThisFrame || Mouse.current.rightButton.wasPressedThisFrame)
                 && Time.time - lastTimeShot > timeBetweenShot
                 && !isThrowing) {
-
                     bulletPreview.gameObject.SetActive(false);
-                    StartCoroutine(ThrowingBullet(cellCenter, index));
+                    StartCoroutine(ThrowingBullet(cellCenter, index, Mouse.current.leftButton.wasPressedThisFrame));
                 }
             }
             else {
@@ -70,7 +69,7 @@ public class ThrowBullet : MonoBehaviour
         }
     }
     
-    IEnumerator ThrowingBullet(Vector3 targetPosition, Vector3Int cell)
+    IEnumerator ThrowingBullet(Vector3 targetPosition, Vector3Int cell,bool isConstruction)
     {
         isThrowing = true;
         lastTimeShot = Time.time;
@@ -82,7 +81,7 @@ public class ThrowBullet : MonoBehaviour
         Transform bullet = Instantiate<Transform>(prefabBullet, StrawOutput.position, Quaternion.identity);
 
         
-        bullet.gameObject.GetComponent<Bullet>().Init(cell, level);
+        bullet.gameObject.GetComponent<Bullet>().Init(cell, level, isConstruction);
 
         float lDuration = .5f;
         float lTime = 0f;
@@ -99,12 +98,12 @@ public class ThrowBullet : MonoBehaviour
         bullet.position = targetPosition;
         bullet.localScale = endScale;
         level.map[cell.x, cell.y, cell.z] = CellDatas.Solid;
+        level.GenerateVoxel();
 
         bullet.gameObject.GetComponent<Bullet>().CheckNeighbours();
 
         isThrowing = false;
 
-        g_currentLevel.GenerateVoxel();
     }
 
     private void OnDrawGizmos()
