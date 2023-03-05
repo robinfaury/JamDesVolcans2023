@@ -141,6 +141,11 @@ public class Level : MonoBehaviour
         );
     }
 
+    public Vector3 IndexToPosition (Vector3Int index)
+    {
+        return minPointRounded + (Vector3)index * (cellSize + 0.5f);
+    }
+
     public bool IsCellOccluded(int x, int y, int z)
     {
         float exi = cellExigence / 2;
