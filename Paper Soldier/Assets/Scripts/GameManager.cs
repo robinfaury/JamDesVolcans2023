@@ -34,8 +34,10 @@ public class GameManager : MonoBehaviour
     public static ThrowBullet g_throwBullet;
 
     public static bool g_isGamePlaying;
+
     public static System.Action<Vector3> g_onPlayerChanged;
-    public static System.Action g_OnPlayerDeath;
+    public static System.Action g_onPlayerDeath;
+    public static System.Action g_onGameReboot;
 
     void Awake()
     {
@@ -62,8 +64,9 @@ public class GameManager : MonoBehaviour
 
             yield return new WaitForSeconds(transitionDelay);
 
-            g_player.StartMovement();
             g_tickManager.StartTicking();
+            g_player.StartMovement();
+
             LoadLevel(0);
             canvasGroup.alpha = 0;
             coucouSound.Play();
@@ -81,6 +84,7 @@ public class GameManager : MonoBehaviour
         g_currentLevel = level;
         g_currentLevel.GenerateVoxel();
         g_gameCamera.SetVCam(g_currentLevel.virtualCamera);
+        g_gameCamera.StartMovement();
 
         Vector3 gridBottomPos = g_currentLevel.GetCellBottomAt (level.startPoint.position);
         g_player.transform.position = gridBottomPos;
@@ -89,6 +93,30 @@ public class GameManager : MonoBehaviour
         g_onPlayerChanged += g_currentLevel.OnPlayerPositionChanged;
 
         g_throwBullet.Reset();
+    }
+
+    public void RebootLevel ()
+    {
+        StartCoroutine(Routine()); IEnumerator Routine()
+        {
+            g_tickManager.StopTicking();
+            g_player.StopMovement();
+
+            FadeFromTo(0, 1, transitionDelay);
+            yield return new WaitForSeconds(transitionDelay);
+
+            g_onGameReboot?.Invoke();
+
+            LoadLevel(g_currentLevelIndex);
+            yield return new WaitForSeconds(transitionDelay);
+
+            FadeFromTo(1, 0, transitionDelay);
+            g_player.StartMovement();
+            g_tickManager.StartTicking();
+            canvasGroup.alpha = 0;
+            coucouSound.Play();
+            g_isGamePlaying = true;
+        }
     }
 
     public void NextLevel ()
@@ -100,8 +128,9 @@ public class GameManager : MonoBehaviour
             confetti.transform.forward = -g_player.transform.forward;
             Destroy(confetti, 5);
 
-            g_player.StopMovement();
             g_tickManager.StopTicking();
+            g_player.StopMovement();
+
             FadeFromTo(0, 1, transitionDelay);
             yield return new WaitForSeconds(transitionDelay);
 

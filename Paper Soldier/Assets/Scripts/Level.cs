@@ -215,5 +215,6 @@ public enum CellDatas
 {
     Empty,
     Solid,
-    NextLevelCell
+    NextLevelCell,
+    Character
 }

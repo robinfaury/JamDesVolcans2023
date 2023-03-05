@@ -26,7 +26,7 @@ MonoBehaviour:
     pitch:
       random: 1
       defaultValue: 1
-      minValue: 0.9
-      maxValue: 1.1
+      minValue: 0.6
+      maxValue: 0.7
     playProbability: 1
   sources: []
