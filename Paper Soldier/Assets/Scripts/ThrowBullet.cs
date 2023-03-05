@@ -198,7 +198,7 @@ public class ThrowBullet : MonoBehaviour
     public void Reset()
     {
         Bullet.DestroyAllBullets();
-        bulletCount = g_currentLevel.bulletCountAllowed;
+        bulletCount = g_currentLevel.maxBullet;
         InitUI(bulletCount);
     }
 }

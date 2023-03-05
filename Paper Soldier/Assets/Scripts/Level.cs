@@ -21,7 +21,12 @@ public class Level : MonoBehaviour
     [Range(0.1f, 1f)] public float cellExigence = 0.5f;
     public LayerMask occlusionLayer;
     public CinemachineVirtualCamera virtualCamera;
-    public int bulletCountAllowed = 5;
+
+    [Title("SCORING AND BULLETS")]
+    public int maxBullet = 10;
+    public int optimalBulletScore = 5;
+    public int optimalTravel = 20;
+    public int badTravel = 40;
 
     [Title ("DEBUGGIN & RUNTIME")]
     public bool showGizmos;
