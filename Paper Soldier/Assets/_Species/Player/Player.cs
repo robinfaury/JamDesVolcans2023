@@ -130,6 +130,7 @@ public class Player : MonoBehaviour
                         break;
                     case Action.AboutFace:
                         transform.forward = -transform.forward;
+                        penalitySound.Play();
                         break;
                     case Action.DontMove:
                         break;
@@ -239,7 +240,7 @@ public class Player : MonoBehaviour
 
                 animationScale = 1;
                 transform.position = g_currentLevel.GetCellBottomAt(transform.position) + Vector3.up;
-                penalitySound.Play();
+                if (fallHeight > 1) penalitySound.Play();
 
                 float resetWaitTime = Mathf.CeilToInt (fallDuration / TickManager.TickDuration);
                 yield return new WaitForSeconds(resetWaitTime);
