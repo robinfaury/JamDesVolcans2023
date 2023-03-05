@@ -106,7 +106,6 @@ public class Level : MonoBehaviour
                     bool bottomCell = map[x, y - 1, z] == CellDatas.Empty;
                     if (!bottomCell && topCell) {
                         walkableMap[x, y, z] = true;
-                        break;
                     }
                 }
             }
