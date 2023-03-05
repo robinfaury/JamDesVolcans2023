@@ -27,8 +27,8 @@ MonoBehaviour:
     volume:
       random: 1
       defaultValue: 1
-      minValue: 0.8
-      maxValue: 1.2
+      minValue: 0.7
+      maxValue: 0.8
     pitch:
       random: 1
       defaultValue: 1

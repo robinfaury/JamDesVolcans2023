@@ -76,7 +76,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aad540d41ba454a40afdff15ccbae51e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  level: {fileID: 0}
   prefabBullet: {fileID: 6696544169093719544, guid: 8f82afdc1e255e84891a17fb8c467976,
     type: 3}
   StrawPivot: {fileID: 1797964431974305459}
@@ -126,7 +125,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3277416039868906060}
-  m_Mesh: {fileID: -4246655633320880430, guid: ade4a5aa17b073a4899203b2d1d0c19a, type: 3}
+  m_Mesh: {fileID: 3879342313201604960, guid: e0cdcd30c906a564fa1a76676e9cd8de, type: 3}
 --- !u!23 &3925807324125600665
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -147,7 +146,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 8830196273332348141, guid: ade4a5aa17b073a4899203b2d1d0c19a, type: 3}
+  - {fileID: 2100000, guid: d83b7f1a10110e94b99a64d7f215dc39, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

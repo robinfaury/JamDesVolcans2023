@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
 
     [Title("REFERENCES")]
     public CanvasGroup canvasGroup;
+    public GameObject confettiFinishLevel;
     public Sound music;
     public Sound coucouSound;
     public List<Level> levels;
@@ -88,6 +89,12 @@ public class GameManager : MonoBehaviour
     {
         StartCoroutine(Routine()); IEnumerator Routine()
         {
+
+            GameObject confetti = Instantiate (confettiFinishLevel);
+            confetti.transform.position = g_currentLevel.endPoint.position;
+            confetti.transform.forward = -g_player.transform.forward;
+            Destroy(confetti, 5);
+
             g_player.StopMovement();
             g_tickManager.StopTicking();
             FadeFromTo(0, 1, transitionDelay);

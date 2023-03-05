@@ -10,11 +10,13 @@ using static GameManager;
 public class ThrowBullet : MonoBehaviour
 {
 
+    public Transform cursorPreview;
     public Transform prefabBullet;
     public Transform StrawPivot;
     public Transform StrawOutput;
 
-    private Transform bulletPreview;
+    //private Transform bulletPreview;
+
     public Sound sarbacane;
 
     new Camera camera;
@@ -31,9 +33,12 @@ public class ThrowBullet : MonoBehaviour
     {
         camera = GetComponentInParent<Camera>();
         StrawPivot.localPosition = new Vector3(0, -0.41f, 0.457f);
+
+        /*
         bulletPreview = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
         bulletPreview.GetComponent<Collider>().enabled = false;
         bulletPreview.transform.localScale = Vector3.one * .5f;
+        */
     }
 
     void Update()
@@ -41,32 +46,37 @@ public class ThrowBullet : MonoBehaviour
         if (g_isGamePlaying) UpdateThrowBullet();
     }
 
-    Vector3 point;
+    Vector3 point, normal;
     public void UpdateThrowBullet ()
     {
         if (g_currentLevel == null) return;
         Ray ray = camera.ScreenPointToRay(Mouse.current.position.ReadValue());
-        if (Physics.SphereCast(ray, g_currentLevel.cellSize * 0.2f, out RaycastHit hitInfo)) {
+        if (Physics.SphereCast(ray, 0.1f, out RaycastHit hitInfo)) {
+
             //Set straw orientation
             StrawPivot.forward = StrawPivot.position - hitInfo.point;
             point = hitInfo.point;
+            normal = hitInfo.normal;
+
             //Set preview and precompute voxelPos
-            Vector3Int index = g_currentLevel.PositionToIndex(hitInfo.point + Vector3.up * g_currentLevel.cellSize / 4);
+            Vector3Int index = g_currentLevel.PositionToIndex(hitInfo.point + hitInfo.normal * g_currentLevel.cellSize / 4);
             Vector3 cellCenter = g_currentLevel.GetCellCenter(index.x, index.y, index.z);
+
             if (g_currentLevel.map[index.x, index.y, index.z] == CellDatas.Empty) {
-                bulletPreview.gameObject.SetActive(true);
-                bulletPreview.position = Vector3.Lerp(bulletPreview.position, cellCenter, .4f);
+                cursorPreview.gameObject.SetActive(true);
+                cursorPreview.position = Vector3.Lerp(cursorPreview.position, cellCenter, .4f);
+                cursorPreview.transform.up = normal;
 
                 //throw bullet
                 if ((Mouse.current.leftButton.wasPressedThisFrame || Mouse.current.rightButton.wasPressedThisFrame)
                 && Time.time - lastTimeShot > timeBetweenShot
                 && !isThrowing) {
-                    bulletPreview.gameObject.SetActive(false);
+                    cursorPreview.gameObject.SetActive(false);
                     StartCoroutine(ThrowingBullet(cellCenter, index, Mouse.current.leftButton.wasPressedThisFrame));
                 }
             }
             else {
-                bulletPreview.gameObject.SetActive(false);
+                cursorPreview.gameObject.SetActive(false);
             }
         }
     }
@@ -111,6 +121,7 @@ public class ThrowBullet : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawSphere(point, 0.3f);
+        Gizmos.DrawSphere(point, 0.2f);
+        Gizmos.DrawLine(point, point + normal);
     }
 }

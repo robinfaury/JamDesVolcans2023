@@ -23,6 +23,7 @@ public class Player : MonoBehaviour
     public EventListener eventListener;
     public Animator animator;
     public Transform model;
+    public GameObject footPrintPrefab;
 
     [Title ("DEBUG & RUNTIME")]
     public bool isMoving;
@@ -121,7 +122,6 @@ public class Player : MonoBehaviour
         animator.Update(Time.deltaTime * animationScale);
     }
 
-    Vector3 a, b;
     public void Move(AnimationCurve f, AnimationCurve v, Vector3 start, Vector3 delta, float tickDuration, string trigger, Action action)
     {
         StartCoroutine(Routine()); IEnumerator Routine ()
@@ -131,11 +131,8 @@ public class Player : MonoBehaviour
             Vector3 directionStart = transform.forward;
             Vector3 directionEnd = (end - start).WithY (0).normalized;
 
-            a = start;
-            b = end;
-
             float duration = tickDuration * movementTickPercent;
-            Vector3 df = (end - start).normalized.WithY (0);
+            Vector3 df = (end - start).WithY(0).normalized;
             float dv = end.y - start.y;
 
             float percent = 0; while ((percent += Time.deltaTime / duration) < 1) {
@@ -209,9 +206,6 @@ public class Player : MonoBehaviour
         int y = g_currentLevel.ConvertCoordY (transform.position.y);
         int z = g_currentLevel.ConvertCoordZ (transform.position.z);
 
-        Gizmos.DrawSphere(a, 0.2f);
-        Gizmos.DrawSphere(b, 0.2f);
-
         DrawAt(0, 0, 1);
         void DrawAt(int xo, int yo, int zo)
         {
@@ -221,7 +215,14 @@ public class Player : MonoBehaviour
 
     public void Event (string sound)
     {
-        if (sound == "Step") stepSound.Play();
+        if (sound == "Step") {
+            stepSound.Play();
+            GameObject footPrint = Instantiate(footPrintPrefab);
+            footPrint.transform.position = transform.position + Vector3.up * 0.05f;
+            footPrint.transform.forward = transform.forward;
+            footPrint.SetActive(true);
+            Destroy(footPrint, 12);
+        }
         if (sound == "Jump") jumpSound.Play();
     }
 }
