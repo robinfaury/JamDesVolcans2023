@@ -86,11 +86,11 @@ public class Player : MonoBehaviour
                     else if (perseption[character_index_x + 1, 1, 1] == CellDatas.Empty && perseption[character_index_x + 1, 1, 0] == CellDatas.Empty) {
                         action = perseption[character_index_x + 1, 0, 0] == CellDatas.Empty ? Action.Right : Action.JumpRight;
                     }
-                    else if (perseption[character_index_x - 1, 1, 1] == CellDatas.Solid && perseption[character_index_x - 1, 0, 0] == CellDatas.Solid)
+                    else if ((perseption[character_index_x - 1, 1, 1] == CellDatas.Solid || perseption[character_index_x - 1, 1, 1] == CellDatas.Boulette) && (perseption[character_index_x - 1, 0, 0] == CellDatas.Solid || perseption[character_index_x - 1, 0, 0] == CellDatas.Boulette))
                     {
                         action = Action.JumpLeft;
                     }
-                    else if (perseption[character_index_x + 1, 1, 1] == CellDatas.Solid && perseption[character_index_x + 1, 0, 0] == CellDatas.Solid)
+                    else if ((perseption[character_index_x + 1, 1, 1] == CellDatas.Solid || perseption[character_index_x + 1, 1, 1] == CellDatas.Boulette) && (perseption[character_index_x + 1, 0, 0] == CellDatas.Solid || perseption[character_index_x + 1, 0, 0] == CellDatas.Boulette))
                     {
                         action = Action.JumpRight;
                     }
@@ -203,7 +203,7 @@ public class Player : MonoBehaviour
 
             // Chute mortelle ?
             for (int y = index.y - 1; y > 0; y--) {
-                if (g_currentLevel.map[index.x, y, index.z] == CellDatas.Solid) {
+                if (g_currentLevel.map[index.x, y, index.z] == CellDatas.Solid || g_currentLevel.map[index.x, y, index.z] == CellDatas.Boulette) {
                     isDeath = false;
                     endPoint = g_currentLevel.GetCellBottomAt(new Vector3 (index.x, y, index.z));
                     break;  

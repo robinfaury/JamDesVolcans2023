@@ -130,6 +130,17 @@ public class Bullet : MonoBehaviour
         Destroy(gameObject);
     }
 
+    public static void DestroyAllBullets()
+    {
+        for (int i = 0; i < allBullets.Count; i++)
+        {
+            allBullets[i].mLevel.map[allBullets[i].mCell.x, allBullets[i].mCell.y, allBullets[i].mCell.z] = CellDatas.Empty;
+            
+            Destroy(allBullets[i].gameObject);
+        }
+        allBullets.Clear();
+    }
+
     private void SphereToCube()
     {
         if (isCube) return;
@@ -150,4 +161,7 @@ public class Bullet : MonoBehaviour
     {
         Destroy(effect);
     }
+
+
+   
 }
