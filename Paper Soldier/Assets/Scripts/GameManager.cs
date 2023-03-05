@@ -31,8 +31,9 @@ public class GameManager : MonoBehaviour
     public static TickManager g_tickManager;
     public static GameManager g_gameManager;
 
-    public static System.Action<Vector3> g_onPlayerChanged;
     public static bool g_isGamePlaying;
+    public static System.Action<Vector3> g_onPlayerChanged;
+    public static System.Action g_OnPlayerDeath;
 
     void Awake()
     {

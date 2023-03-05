@@ -101,8 +101,7 @@ public class Player : MonoBehaviour
                         Move(jumpFCurve, jumpVCurve, transform.position, transform.up - transform.right, tickDuration, trigger, action); 
                         break;
                     case Action.Fall:
-                        Move(walkFCurve, walkVCurve, transform.position, - transform.up, tickDuration, trigger, action);
-                        fallSound.Play();
+                        Fall();
                         break;
                     case Action.AboutFace:
                         transform.forward = -transform.forward;
@@ -144,6 +143,20 @@ public class Player : MonoBehaviour
             transform.position = end;
             model.forward = directionEnd;
             g_onPlayerChanged?.Invoke(end);
+        }
+    }
+
+    public void Fall ()
+    {
+        StartCoroutine(Routine()); IEnumerator Routine()
+        {
+            animator.SetTrigger("fall");
+            Vector3 velocity = Vector3.zero;
+            while (true) {
+                velocity -= Vector3.up * Time.deltaTime;
+                transform.position -= velocity * Time.deltaTime;
+                yield return null;
+            }
         }
     }
 
@@ -213,9 +226,9 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void Event (string sound)
+    public void Event (string eventName)
     {
-        if (sound == "Step") {
+        if (eventName == "Step") {
             stepSound.Play();
             GameObject footPrint = Instantiate(footPrintPrefab);
             footPrint.transform.position = transform.position + Vector3.up * 0.05f;
@@ -223,6 +236,13 @@ public class Player : MonoBehaviour
             footPrint.SetActive(true);
             Destroy(footPrint, 12);
         }
-        if (sound == "Jump") jumpSound.Play();
+        if (eventName == "Jump") jumpSound.Play();
+        if (eventName == "FallSound") fallSound.Play();
+        if (eventName == "FreezePoint") animationScale = 0;
+    }
+
+    public void Death ()
+    {
+        g_OnPlayerDeath?.Invoke();
     }
 }
