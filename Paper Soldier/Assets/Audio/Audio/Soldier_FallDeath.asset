@@ -10,14 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b60aff6cebb42f6419a8796997b0ab4a, type: 3}
-  m_Name: Soldier_Fall
+  m_Name: Soldier_FallDeath
   m_EditorClassIdentifier: 
   audioMixer: {fileID: 0}
   volume: 1
   pitch: 1
   soundClips:
   - clips:
-    - {fileID: 8300000, guid: da1aa149942c8724bb37cfab4a02368c, type: 3}
+    - {fileID: 8300000, guid: a56e99107d870354db3c013a73d8b0ed, type: 3}
+    - {fileID: 8300000, guid: fede83a1a65becb4d98faca85fc429e2, type: 3}
+    - {fileID: 8300000, guid: 4ba6f22ff43ac6b4ab0ac6c5c49d5645, type: 3}
     volume:
       random: 0
       defaultValue: 1

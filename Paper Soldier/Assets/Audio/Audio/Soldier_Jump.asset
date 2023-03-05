@@ -44,4 +44,7 @@ MonoBehaviour:
       minValue: 0.8
       maxValue: 1.2
     playProbability: 1
-  sources: []
+  sources:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
