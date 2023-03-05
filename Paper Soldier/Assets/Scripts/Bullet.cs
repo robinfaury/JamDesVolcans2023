@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using UnityEngine;
 
 using UnityEngine.InputSystem;
@@ -74,13 +75,15 @@ public class Bullet : MonoBehaviour
             {
                 if (AreNeighbours(this, allBullets[i]))
                 {
-                    allBullets[i].SphereToCube();
+                    allBullets[i].SphereToCube(.02f);
                     sphereToCube = true;
                 }
             }
 
             if (sphereToCube)
-                SphereToCube();
+                SphereToCube(giggle:false);
+
+            StartCoroutine(GiggleAnim());
         }
     }
 
@@ -141,8 +144,10 @@ public class Bullet : MonoBehaviour
         allBullets.Clear();
     }
 
-    private void SphereToCube()
+    private void SphereToCube(float delay = 0, bool giggle = true)
     {
+        if(giggle)
+            StartCoroutine(GiggleAnim(delay));
         if (isCube) return;
 
         isCube = true;
@@ -155,13 +160,38 @@ public class Bullet : MonoBehaviour
                                         0,
                                         availableRotation[Random.Range(0, availableRotation.Count)]);
         cube.GetComponent<Renderer>().material.color = GetComponent<Renderer>().material.color;
+
+    }
+
+    IEnumerator GiggleAnim(float delay = 0, bool onlyUp = false)
+    {
+        yield return new WaitForSeconds(delay);
+        Vector3 baseScale = GameManager.g_throwBullet.endScale;
+
+        Vector3 middleScale = baseScale * .95f;
+        float lTime = 0;
+        float lDuration = 0.1f;
+        float lStartTime = Time.time;
+
+        while (lTime < 1f)
+        {
+            lTime = (Time.time - lStartTime) / lDuration;
+            transform.localScale = Mathfx.Sinerp(baseScale, middleScale, lTime);
+            yield return null;
+        }
+        lStartTime = Time.time;
+        while (lTime < 1f)
+        {
+            lTime = (Time.time - lStartTime) / lDuration;
+            transform.localScale = Vector3.Lerp(middleScale, baseScale, lTime);
+            yield return null;
+        }
+        transform.localScale = baseScale;
     }
 
     private void OnDestroy()
     {
         Destroy(effect);
     }
-
-
    
 }
