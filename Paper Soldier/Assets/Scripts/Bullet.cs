@@ -155,6 +155,31 @@ public class Bullet : MonoBehaviour
                                         0,
                                         availableRotation[Random.Range(0, availableRotation.Count)]);
         cube.GetComponent<Renderer>().material.color = GetComponent<Renderer>().material.color;
+
+        StartCoroutine(GiggleAnim());
+    }
+
+    IEnumerator GiggleAnim()
+    {
+        Vector3 middleScale = Vector3.one * .9f;
+        float lTime = 0;
+        float lDuration = 0.3f;
+        float lStartTime = Time.time;
+
+        while(lTime < 1f)
+        {
+            lTime = (Time.time - lStartTime)/lDuration;
+            transform.localScale = Mathfx.Sinerp(Vector3.one, middleScale, lTime);
+            yield return null;
+        }
+        lStartTime = Time.time;
+        while (lTime < 1f)
+        {
+            lTime = (Time.time - lStartTime) / lDuration;
+            transform.localScale = Mathfx.Coserp(middleScale, Vector3.one, lTime);
+            yield return null;
+        }
+        transform.localScale = Vector3.one;
     }
 
     private void OnDestroy()
