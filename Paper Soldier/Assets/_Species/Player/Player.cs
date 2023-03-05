@@ -235,9 +235,11 @@ public class Player : MonoBehaviour
 
             // Pénalité de chute
             else {
-                fallSound.Play();
-                float fallHeight = index.y - endPoint.y - g_currentLevel.cellSize / 4;
+
+                float height = g_currentLevel.GetCellBottomAt (new Vector3 (index.x, index.y, index.z)).y + 2;
+                float fallHeight = height - endPoint.y;
                 float fallDuration = Mathf.Sqrt ((2 * fallHeight) / 10);
+
                 float fallTime = 0;
                 while ((fallTime += Time.deltaTime / fallDuration) < 1) {
                     velocity -= Vector3.up * Time.deltaTime * 10;
@@ -246,7 +248,7 @@ public class Player : MonoBehaviour
                 }
 
                 animationScale = 1;
-                transform.position = g_currentLevel.GetCellBottomAt(transform.position - Vector3.up * 0.5f) + Vector3.up;
+                transform.position = g_currentLevel.GetCellBottomAt(transform.position);
                 if (fallHeight > 1) penalitySound.Play();
 
                 float resetWaitTime = Mathf.CeilToInt (fallDuration / TickManager.TickDuration);

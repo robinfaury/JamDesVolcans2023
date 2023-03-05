@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   transitionDelay: 1
-  defautlLevelIndex: 1
+  defautlLevelIndex: 0
   canvasGroup: {fileID: 0}
   confettiFinishLevel: {fileID: 5895743622418842391, guid: 6cf569aed7e553e499f12d354586add1,
     type: 3}
