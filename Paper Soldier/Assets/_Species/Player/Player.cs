@@ -29,6 +29,19 @@ public class Player : MonoBehaviour
     public bool isMoving;
 
     float animationScale;
+    bool fallOnMovement;
+    bool lunchFall;
+    bool isFalling;
+
+    private void Awake()
+    {
+        g_onGameReboot += () => {
+            animationScale = 1;
+            fallOnMovement = false;
+            lunchFall = false;
+            isFalling = false;
+        };
+    }
 
     IEnumerator Start ()
     {
@@ -46,9 +59,13 @@ public class Player : MonoBehaviour
                     action = Action.Fall;
                 }
                 else {
+                    // Déplacement de la logique de fall dans le movement
+                    // Pour enchainer la chute directement après le déplacement
+                    /*
                     if (g_currentLevel.map[current_index_cell.x, current_index_cell.y - 1, current_index_cell.z] == CellDatas.Empty) {
                         action = Action.Fall;
                     }
+                    */
                 }
                 if (action == Action.DontMove) {
                     if (perseption[character_index_x, 1, 1] == CellDatas.Empty) {
@@ -101,7 +118,6 @@ public class Player : MonoBehaviour
                         Move(jumpFCurve, jumpVCurve, transform.position, transform.up - transform.right, tickDuration, trigger, action); 
                         break;
                     case Action.Fall:
-                        Fall();
                         break;
                     case Action.AboutFace:
                         transform.forward = -transform.forward;
@@ -125,37 +141,96 @@ public class Player : MonoBehaviour
     {
         StartCoroutine(Routine()); IEnumerator Routine ()
         {
+            Debug.Log("Move");
+
             animator.SetTrigger(trigger);
             Vector3 end = start + delta;
             Vector3 directionStart = transform.forward;
             Vector3 directionEnd = (end - start).WithY (0).normalized;
 
+            Vector3Int index = g_currentLevel.PositionToIndex (end - Vector3.up);
+            fallOnMovement = g_currentLevel.map [index.x, index.y, index.z] == CellDatas.Empty;
+
             float duration = tickDuration * movementTickPercent;
             Vector3 df = (end - start).WithY(0).normalized;
             float dv = end.y - start.y;
+            Vector3 simulatedPos = Vector3.zero;
 
             float percent = 0; while ((percent += Time.deltaTime / duration) < 1) {
-                Vector3 position = start + df * f.Evaluate (percent) + Vector3.up * dv * v.Evaluate (percent);
+
+                // Move 
+                Vector3 lastPos = simulatedPos;
+                simulatedPos = df * f.Evaluate (percent) + Vector3.up * dv * v.Evaluate (percent);
                 model.forward = Vector3.Lerp(directionStart, directionEnd, rotationCurve.Evaluate(percent));
-                transform.position = position;
+                transform.position += simulatedPos - lastPos;
+
+                // Fall => lance la routine
+                if (lunchFall) { Fall(index); lunchFall = false; }
+
                 yield return null;
             }
-            transform.position = end;
+
+            if (!isFalling) transform.position = end;
             model.forward = directionEnd;
             g_onPlayerChanged?.Invoke(end);
         }
     }
 
-    public void Fall ()
+    void Fall(Vector3Int index)
     {
-        StartCoroutine(Routine()); IEnumerator Routine()
+        StartCoroutine(FallRoutine()); IEnumerator FallRoutine()
         {
-            animator.SetTrigger("fall");
+            isFalling = true;
+            animationScale = 0.1f;
+            fallSound.Play();
+            isMoving = false;
             Vector3 velocity = Vector3.zero;
-            while (true) {
-                velocity -= Vector3.up * Time.deltaTime;
-                transform.position -= velocity * Time.deltaTime;
-                yield return null;
+            bool isDeath = true;
+            Vector3 endPoint = Vector3.zero;
+
+            // Chute mortelle ?
+            for (int y = index.y - 1; y > 0; y--) {
+                if (g_currentLevel.map[index.x, y, index.z] == CellDatas.Solid) {
+                    isDeath = false;
+                    endPoint = g_currentLevel.GetCellBottomAt(new Vector3 (index.x, y, index.z));
+                    break;  
+                }
+            }
+
+            // Mort de chute
+            if (isDeath) {
+                g_gameCamera.StopMovement();
+
+                float startFallTime = Time.time;
+                float fallDuration = 1;
+                while (Time.time - startFallTime < fallDuration) {
+                    velocity -= Vector3.up * Time.deltaTime * 10;
+                    transform.position += velocity * Time.deltaTime;
+                    yield return null;
+                }
+
+                OnPlayerDeath();
+            }
+
+            // Pénalité de chute
+            else {
+                float fallHeight = index.y - endPoint.y - g_currentLevel.cellSize / 4;
+                float fallDuration = Mathf.Sqrt ((2 * fallHeight) / 10);
+                Debug.Log(fallHeight + " " + fallDuration);
+                float fallTime = 0;
+                while ((fallTime += Time.deltaTime / fallDuration) < 1) {
+                    velocity -= Vector3.up * Time.deltaTime * 10;
+                    transform.position += velocity * Time.deltaTime;
+                    yield return null;
+                }
+
+                Debug.Log("zerzer");
+                transform.position = endPoint;
+                isFalling = false;
+                lunchFall = false;
+                fallOnMovement = false;
+                animationScale = 1;
+                isMoving = true;
             }
         }
     }
@@ -168,6 +243,7 @@ public class Player : MonoBehaviour
     public void StartMovement ()
     {
         isMoving = true;
+        animationScale = 1;
     }
 
     public void StopMovement ()
@@ -228,21 +304,22 @@ public class Player : MonoBehaviour
 
     public void Event (string eventName)
     {
-        if (eventName == "Step") {
-            stepSound.Play();
+        if (eventName.Contains ("StepSound") && !isFalling) stepSound.Play();
+        if (eventName.Contains ("StepPart") && !isFalling) {
             GameObject footPrint = Instantiate(footPrintPrefab);
             footPrint.transform.position = transform.position + Vector3.up * 0.05f;
             footPrint.transform.forward = transform.forward;
             footPrint.SetActive(true);
             Destroy(footPrint, 12);
         }
-        if (eventName == "Jump") jumpSound.Play();
-        if (eventName == "FallSound") fallSound.Play();
-        if (eventName == "FreezePoint") animationScale = 0;
+
+        if (eventName == "Jump" && !isFalling) jumpSound.Play();
+        if (eventName == "Fall" && fallOnMovement) lunchFall = true;
     }
 
-    public void Death ()
+    public void OnPlayerDeath ()
     {
-        g_OnPlayerDeath?.Invoke();
+        g_onPlayerDeath?.Invoke();
+        g_gameManager.RebootLevel();
     }
 }
