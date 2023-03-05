@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     public Player player;
     public TickManager tickManager;
     public GameCamera gameCamera;
+    public ThrowBullet throwBullet;
 
     public static int g_currentLevelIndex;
     public static Level g_currentLevel;
@@ -30,6 +31,7 @@ public class GameManager : MonoBehaviour
     public static Player g_player;
     public static TickManager g_tickManager;
     public static GameManager g_gameManager;
+    public static ThrowBullet g_throwBullet;
 
     public static bool g_isGamePlaying;
     public static System.Action<Vector3> g_onPlayerChanged;
@@ -43,6 +45,7 @@ public class GameManager : MonoBehaviour
         g_gameManager = this;
         g_levels = levels;
         g_gameCamera = gameCamera;
+        g_throwBullet = throwBullet;
     }
 
     void Start()
@@ -84,13 +87,14 @@ public class GameManager : MonoBehaviour
         g_player.transform.forward = (level.endPoint.position - level.startPoint.position).WithY(0).normalized;
 
         g_onPlayerChanged += g_currentLevel.OnPlayerPositionChanged;
+
+        g_throwBullet.Reset();
     }
 
     public void NextLevel ()
     {
         StartCoroutine(Routine()); IEnumerator Routine()
         {
-
             GameObject confetti = Instantiate (confettiFinishLevel);
             confetti.transform.position = g_currentLevel.endPoint.position;
             confetti.transform.forward = -g_player.transform.forward;

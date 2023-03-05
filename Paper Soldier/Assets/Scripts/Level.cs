@@ -21,6 +21,7 @@ public class Level : MonoBehaviour
     [Range(0.1f, 1f)] public float cellExigence = 0.5f;
     public LayerMask occlusionLayer;
     public CinemachineVirtualCamera virtualCamera;
+    public int bulletCountAllowed = 5;
 
     [Title ("DEBUGGIN & RUNTIME")]
     public bool showGizmos;
