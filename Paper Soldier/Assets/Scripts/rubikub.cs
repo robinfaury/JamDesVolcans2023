@@ -22,6 +22,10 @@ public class rubikub : MonoBehaviour
         wait = delay;
         TickManager.onTick += () =>
         {
+            if (g_currentLevelIndex <= 3)
+            {
+                return;
+            }
             if (--wait > 0)
             {
                 return;
