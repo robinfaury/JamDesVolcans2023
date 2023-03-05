@@ -173,7 +173,6 @@ public class Player : MonoBehaviour
         animator.Update(Time.deltaTime * animationScale);
     }
 
-    Vector3 a, b;
     public void Move(AnimationCurve f, AnimationCurve v, Vector3 start, Vector3 delta, float tickDuration, string trigger, Action action)
     {
         StartCoroutine(Routine()); IEnumerator Routine ()
@@ -195,9 +194,6 @@ public class Player : MonoBehaviour
             Vector3 df = (end - start).WithY(0).normalized;
             float dv = end.y - start.y;
             Vector3 simulatedPos = Vector3.zero;
-
-            a = start;
-            b = end;
 
             float percent = 0; while ((percent += Time.deltaTime / duration) < 1) {
 
@@ -258,9 +254,11 @@ public class Player : MonoBehaviour
 
             // Pénalité de chute
             else {
-                fallSound.Play();
-                float fallHeight = index.y - endPoint.y - g_currentLevel.cellSize / 4;
+
+                float height = g_currentLevel.GetCellBottomAt (new Vector3 (index.x, index.y, index.z)).y + 1;
+                float fallHeight = height - endPoint.y;
                 float fallDuration = Mathf.Sqrt ((2 * fallHeight) / 10);
+
                 float fallTime = 0;
                 while ((fallTime += Time.deltaTime / fallDuration) < 1) {
                     velocity -= Vector3.up * Time.deltaTime * 10;
@@ -269,7 +267,7 @@ public class Player : MonoBehaviour
                 }
 
                 animationScale = 1;
-                transform.position = g_currentLevel.GetCellBottomAt(transform.position - Vector3.up * 0.5f) + Vector3.up;
+                transform.position = g_currentLevel.GetCellBottomAt(transform.position.WithY (endPoint.y));
                 if (fallHeight > 1) penalitySound.Play();
 
                 float resetWaitTime = Mathf.CeilToInt (fallDuration / TickManager.TickDuration);
@@ -344,8 +342,6 @@ public class Player : MonoBehaviour
         int z = g_currentLevel.ConvertCoordZ (transform.position.z);
 
         DrawAt(0, 0, 1);
-        Gizmos.DrawSphere(a, 0.1f);
-        Gizmos.DrawSphere(b, 0.1f);
 
         void DrawAt(int xo, int yo, int zo)
         {
