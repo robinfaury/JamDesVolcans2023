@@ -64,7 +64,7 @@ public class Player : MonoBehaviour
                 Action action = Action.DontMove;
                 int perseption_width = 5;
                 int character_index_x = perseption_width/2;
-                CellDatas[,,] perseption = Perceive(perseption_width, 2, 2);
+                CellDatas[,,] perseption = Perceive(perseption_width, 3, 2);
                 Vector3Int current_index_cell = g_currentLevel.PositionToIndex(transform.position);
 
                 if (current_index_cell.y == 0) {
@@ -89,13 +89,36 @@ public class Player : MonoBehaviour
                     else if (perseption[character_index_x + 1, 1, 1] == CellDatas.Empty && perseption[character_index_x + 1, 1, 0] == CellDatas.Empty) {
                         action = perseption[character_index_x + 1, 0, 0] == CellDatas.Empty ? Action.Right : Action.JumpRight;
                     }
-                    else if ((perseption[character_index_x - 1, 1, 1] == CellDatas.Solid || perseption[character_index_x - 1, 1, 1] == CellDatas.Boulette) && (perseption[character_index_x - 1, 0, 0] == CellDatas.Solid || perseption[character_index_x - 1, 0, 0] == CellDatas.Boulette))
+                    else if ((perseption[character_index_x - 1, 1, 1] == CellDatas.Solid || perseption[character_index_x - 1, 1, 1] == CellDatas.Boulette) &&
+                        (perseption[character_index_x - 1, 0, 0] == CellDatas.Solid || perseption[character_index_x - 1, 0, 0] == CellDatas.Boulette))
                     {
                         action = Action.JumpLeft;
                     }
-                    else if ((perseption[character_index_x + 1, 1, 1] == CellDatas.Solid || perseption[character_index_x + 1, 1, 1] == CellDatas.Boulette) && (perseption[character_index_x + 1, 0, 0] == CellDatas.Solid || perseption[character_index_x + 1, 0, 0] == CellDatas.Boulette))
+                    else if ((perseption[character_index_x + 1, 1, 1] == CellDatas.Solid || perseption[character_index_x + 1, 1, 1] == CellDatas.Boulette) &&
+                        (perseption[character_index_x + 1, 0, 0] == CellDatas.Solid || perseption[character_index_x + 1, 0, 0] == CellDatas.Boulette))
                     {
                         action = Action.JumpRight;
+                    }
+                }
+                if (action == Action.JumpForward)
+                {
+                    if ((perseption[character_index_x, 2, 1] == CellDatas.Solid || perseption[character_index_x, 2, 1] == CellDatas.Boulette))
+                    {
+                        action = Action.DontMove;
+                    }
+                }
+                if (action == Action.JumpLeft)
+                {
+                    if ((perseption[character_index_x - 1, 2, 1] == CellDatas.Solid || perseption[character_index_x - 1, 2, 1] == CellDatas.Boulette))
+                    {
+                        action = Action.DontMove;
+                    }
+                }
+                if (action == Action.JumpRight)
+                {
+                    if ((perseption[character_index_x + 1, 2, 1] == CellDatas.Solid || perseption[character_index_x + 1, 2, 1] == CellDatas.Boulette))
+                    {
+                        action = Action.DontMove;
                     }
                 }
                 if (action == Action.DontMove) {
