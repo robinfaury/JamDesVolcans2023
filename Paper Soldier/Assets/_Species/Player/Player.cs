@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using Sirenix.OdinInspector;
 using static GameManager;
+using UnityEngine.TextCore.Text;
 
 public class Player : MonoBehaviour
 {
@@ -131,6 +132,11 @@ public class Player : MonoBehaviour
             Vector3 directionStart = transform.forward;
             Vector3 directionEnd = (end - start).WithY (0).normalized;
 
+            Vector3Int cell = g_currentLevel.PositionToIndex(start);
+            g_currentLevel.map[cell.x, cell.y, cell.z] = CellDatas.Empty;
+            cell = g_currentLevel.PositionToIndex(end);
+            g_currentLevel.map[cell.x, cell.y, cell.z] = CellDatas.Character;
+
             float duration = tickDuration * movementTickPercent;
             Vector3 df = (end - start).WithY(0).normalized;
             float dv = end.y - start.y;
@@ -143,6 +149,7 @@ public class Player : MonoBehaviour
             }
             transform.position = end;
             model.forward = directionEnd;
+
             g_onPlayerChanged?.Invoke(end);
         }
     }
