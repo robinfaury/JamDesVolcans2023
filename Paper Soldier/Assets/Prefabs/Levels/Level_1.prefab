@@ -55,11 +55,15 @@ MonoBehaviour:
   endPoint: {fileID: 1482241066838337408}
   offset: {x: 0, y: -0.25, z: 0}
   cellSize: 1
-  cellExigence: 0.573
+  cellExigence: 0.6
   occlusionLayer:
     serializedVersion: 2
     m_Bits: 1
   virtualCamera: {fileID: 3083949452201536823}
+  maxBullet: 10
+  optimalBulletScore: 5
+  optimalTravelTickCount: 40
+  badTravel: 80
   showGizmos: 0
   autoRefresh: 1
   walkableMapColor: {r: 0, g: 1, b: 0.21875882, a: 0.105882354}

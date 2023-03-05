@@ -42,6 +42,7 @@ public class GameManager : MonoBehaviour
     public static System.Action<Vector3> g_onPlayerChanged;
     public static System.Action g_onPlayerDeath;
     public static System.Action g_onGameReboot;
+    public static System.Action g_onLevelChanged;
 
     void Awake()
     {
@@ -99,6 +100,7 @@ public class GameManager : MonoBehaviour
         g_player.transform.forward = (level.endPoint.position - level.startPoint.position).WithY(0).normalized;
 
         g_onPlayerChanged += g_currentLevel.OnPlayerPositionChanged;
+        g_onLevelChanged?.Invoke();
 
         g_throwBullet.Reset();
     }
