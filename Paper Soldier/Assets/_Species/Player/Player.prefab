@@ -5080,7 +5080,9 @@ MonoBehaviour:
     m_RotationOrder: 4
   stepSound: {fileID: 11400000, guid: 270cea9fbbfcfa34abf028bcd7262b1d, type: 2}
   jumpSound: {fileID: 11400000, guid: b50790c075633b841bc4d60ea5902944, type: 2}
-  fallSound: {fileID: 11400000, guid: e02621f88aa19e8459030f690c91ddf3, type: 2}
+  fallDeathSound: {fileID: 11400000, guid: e02621f88aa19e8459030f690c91ddf3, type: 2}
+  fallSound: {fileID: 11400000, guid: a9e0a10823e13404389f66cc7f0161cf, type: 2}
+  penalitySound: {fileID: 11400000, guid: 35acb0e5a9485dc44889e8d03c0caaed, type: 2}
   eventListener: {fileID: 1625325465}
   animator: {fileID: 1557412198131475406}
   model: {fileID: 4969616141870115817}

@@ -90,22 +90,22 @@ public class GameManager : MonoBehaviour
         g_onPlayerChanged += g_currentLevel.OnPlayerPositionChanged;
     }
 
-    public void RebootLevel ()
+    public void RebootLevel (bool skipTransi = false)
     {
         StartCoroutine(Routine()); IEnumerator Routine()
         {
             g_tickManager.StopTicking();
             g_player.StopMovement();
 
-            FadeFromTo(0, 1, transitionDelay);
-            yield return new WaitForSeconds(transitionDelay);
+            if (!skipTransi) FadeFromTo(0, 1, transitionDelay);
+            if (!skipTransi) yield return new WaitForSeconds(transitionDelay);
 
             g_onGameReboot?.Invoke();
 
             LoadLevel(g_currentLevelIndex);
-            yield return new WaitForSeconds(transitionDelay);
+            if (!skipTransi) yield return new WaitForSeconds(transitionDelay);
+            if (!skipTransi) FadeFromTo(1, 0, transitionDelay);
 
-            FadeFromTo(1, 0, transitionDelay);
             g_player.StartMovement();
             g_tickManager.StartTicking();
             canvasGroup.alpha = 0;

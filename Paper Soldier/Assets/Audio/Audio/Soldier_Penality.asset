@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b60aff6cebb42f6419a8796997b0ab4a, type: 3}
-  m_Name: Soldier_Fall
+  m_Name: Soldier_Penality
   m_EditorClassIdentifier: 
   audioMixer: {fileID: 0}
   volume: 1
   pitch: 1
   soundClips:
   - clips:
-    - {fileID: 8300000, guid: da1aa149942c8724bb37cfab4a02368c, type: 3}
+    - {fileID: 8300000, guid: 2efdcaa34ceb2e84583533996991d7dd, type: 3}
     volume:
       random: 0
       defaultValue: 1
@@ -28,7 +28,7 @@ MonoBehaviour:
       defaultValue: 1
       minValue: 0.9
       maxValue: 1.1
-    playProbability: 1
+    playProbability: 0.3
   sources:
   - {fileID: 0}
   - {fileID: 0}
