@@ -150,6 +150,7 @@ public class Player : MonoBehaviour
         animator.Update(Time.deltaTime * animationScale);
     }
 
+    Vector3 a, b;
     public void Move(AnimationCurve f, AnimationCurve v, Vector3 start, Vector3 delta, float tickDuration, string trigger, Action action)
     {
         StartCoroutine(Routine()); IEnumerator Routine ()
@@ -171,6 +172,9 @@ public class Player : MonoBehaviour
             Vector3 df = (end - start).WithY(0).normalized;
             float dv = end.y - start.y;
             Vector3 simulatedPos = Vector3.zero;
+
+            a = start;
+            b = end;
 
             float percent = 0; while ((percent += Time.deltaTime / duration) < 1) {
 
@@ -317,6 +321,9 @@ public class Player : MonoBehaviour
         int z = g_currentLevel.ConvertCoordZ (transform.position.z);
 
         DrawAt(0, 0, 1);
+        Gizmos.DrawSphere(a, 0.1f);
+        Gizmos.DrawSphere(b, 0.1f);
+
         void DrawAt(int xo, int yo, int zo)
         {
             g_currentLevel.DrawCell(x + xo, y + yo, z + zo, g_currentLevel.walkableMap[x + xo, y + yo, z + zo] ? Color.red : Color.black);
