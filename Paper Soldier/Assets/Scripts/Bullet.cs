@@ -16,7 +16,7 @@ public class Bullet : MonoBehaviour
     private float startTime;
 
     private Level mLevel;
-    private Vector3Int mCell;
+    public Vector3Int mCell;
 
     private bool isCube = false;
 
@@ -123,7 +123,7 @@ public class Bullet : MonoBehaviour
             Destroy(effect);
     }
 
-    private void DestroyBullet()
+    public void DestroyBullet()
     {
         mLevel.map[mCell.x, mCell.y, mCell.z] = CellDatas.Empty;
         allBullets.Remove(this);
