@@ -159,8 +159,8 @@ public class Player : MonoBehaviour
             Vector3 directionStart = transform.forward;
             Vector3 directionEnd = (end - start).WithY (0).normalized;
 
-            Vector3Int index = g_currentLevel.PositionToIndex (end - Vector3.up);
-            fallOnMovement = g_currentLevel.map [index.x, index.y, index.z] == CellDatas.Empty;
+            Vector3Int indexBottom = g_currentLevel.PositionToIndex (end - Vector3.up);
+            fallOnMovement = g_currentLevel.map [indexBottom.x, indexBottom.y, indexBottom.z] == CellDatas.Empty;
 
             Vector3Int cell = g_currentLevel.PositionToIndex(start);
             g_currentLevel.map[cell.x, cell.y, cell.z] = CellDatas.Empty;
@@ -181,7 +181,7 @@ public class Player : MonoBehaviour
                 transform.position += simulatedPos - lastPos;
 
                 // Fall => lance la routine
-                if (lunchFall) { Fall(index); lunchFall = false; fallOnMovement = false; }
+                if (lunchFall) { Fall(indexBottom); lunchFall = false; fallOnMovement = false; }
 
                 yield return null;
             }
@@ -193,7 +193,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    void Fall(Vector3Int index)
+    void Fall(Vector3Int bottomIndex)
     {
         StartCoroutine(FallRoutine()); IEnumerator FallRoutine()
         {
@@ -205,10 +205,10 @@ public class Player : MonoBehaviour
             Vector3 endPoint = Vector3.zero;
 
             // Chute mortelle ?
-            for (int y = index.y - 1; y > 0; y--) {
-                if (g_currentLevel.map[index.x, y, index.z] == CellDatas.Solid || g_currentLevel.map[index.x, y, index.z] == CellDatas.Boulette) {
+            for (int y = bottomIndex.y - 1; y > 0; y--) {
+                if (g_currentLevel.map[bottomIndex.x, y, bottomIndex.z] == CellDatas.Solid || g_currentLevel.map[bottomIndex.x, y, bottomIndex.z] == CellDatas.Boulette) {
                     isDeath = false;
-                    endPoint = g_currentLevel.GetCellBottomAt(new Vector3 (index.x, y, index.z));
+                    endPoint = g_currentLevel.GetCellCenter(bottomIndex.x, y, bottomIndex.z) + g_currentLevel.cellHeight / 2;
                     break;  
                 }
             }
@@ -232,8 +232,8 @@ public class Player : MonoBehaviour
             // Pénalité de chute
             else {
 
-                float height = g_currentLevel.GetCellBottomAt (new Vector3 (index.x, index.y, index.z)).y + 1;
-                float fallHeight = height - endPoint.y;
+                float height = g_currentLevel.GetCellCenter (bottomIndex.x, bottomIndex.y + 1, bottomIndex.z).y;
+                float fallHeight = height - endPoint.y - g_currentLevel.cellSize / 2;
                 float fallDuration = Mathf.Sqrt ((2 * fallHeight) / 10);
 
                 float fallTime = 0;
@@ -244,7 +244,7 @@ public class Player : MonoBehaviour
                 }
 
                 animationScale = 1;
-                transform.position = g_currentLevel.GetCellBottomAt(transform.position.WithY (endPoint.y));
+                transform.position = endPoint;
                 if (fallHeight > 1) penalitySound.Play();
 
                 float resetWaitTime = Mathf.CeilToInt (fallDuration / TickManager.TickDuration);
