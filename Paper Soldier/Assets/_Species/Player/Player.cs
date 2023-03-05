@@ -11,22 +11,27 @@ public class Player : MonoBehaviour
 
     [Title ("PARAMETERS")]
     [Range(0f, 1f)] public float movementTickPercent = 0.5f;
+    public float deathExplosionDuration = 10;
+    public float rebootAfter = 4;
     public AnimationCurve walkFCurve;
     public AnimationCurve walkVCurve;
     public AnimationCurve jumpFCurve;
     public AnimationCurve jumpVCurve;
     public AnimationCurve rotationCurve;
-    public Sound stepSound;
-    public Sound jumpSound;
-    public Sound fallDeathSound;
-    public Sound fallSound;
-    public Sound penalitySound;
 
     [Title ("REFERENCES")]
     public EventListener eventListener;
     public Animator animator;
     public Transform model;
     public GameObject footPrintPrefab;
+    public GameObject deathPrefab;
+    public Sound deathSound;
+    public Sound deathExplosion;
+    public Sound stepSound;
+    public Sound jumpSound;
+    public Sound fallDeathSound;
+    public Sound fallSound;
+    public Sound penalitySound;
 
     [Title ("DEBUG & RUNTIME")]
     public bool isMoving;
@@ -43,6 +48,7 @@ public class Player : MonoBehaviour
             fallOnMovement = false;
             lunchFall = false;
             isFalling = false;
+            model.gameObject.SetActive(true);
         };
     }
 
@@ -232,7 +238,7 @@ public class Player : MonoBehaviour
                 }
 
                 animationScale = 1;
-                transform.position = g_currentLevel.GetCellBottomAt(transform.position);
+                transform.position = g_currentLevel.GetCellBottomAt(transform.position) + Vector3.up;
                 penalitySound.Play();
 
                 float resetWaitTime = Mathf.CeilToInt (fallDuration / TickManager.TickDuration);
@@ -324,11 +330,32 @@ public class Player : MonoBehaviour
 
         if (eventName == "Jump" && !isFalling) jumpSound.Play();
         if (eventName == "Fall" && fallOnMovement) lunchFall = true;
+        if (eventName == "DeathExplosion") DeathExplosion();
     }
 
     public void DeathByHit()
     {
+        animator.SetTrigger("death");
+        StopMovement();
+        g_throwBullet.DisallowThrow();
+        g_onPlayerDeath?.Invoke();
+        deathSound.Play();
+        g_gameCamera.StopMovement();
+    }
 
+    public void DeathExplosion ()
+    {
+        GameObject explosion = Instantiate (deathPrefab);
+        explosion.transform.position = transform.position;
+        Destroy(explosion, deathExplosionDuration);
+        deathExplosion.Play();
+        model.gameObject.SetActive(false);
+
+        StartCoroutine(Routine()); IEnumerator Routine ()
+        {
+            yield return new WaitForSeconds(rebootAfter);
+            g_gameManager.RebootLevel();
+        }
     }
 
     public void OnPlayerDeath ()

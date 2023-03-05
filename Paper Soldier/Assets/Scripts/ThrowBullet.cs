@@ -28,6 +28,7 @@ public class ThrowBullet : MonoBehaviour
     private float lastTimeShot = 0;
 
     private bool isThrowing = false;
+    private bool canThrow;
 
     void Start()
     {
@@ -43,7 +44,7 @@ public class ThrowBullet : MonoBehaviour
 
     void Update()
     {
-        if (g_isGamePlaying) UpdateThrowBullet();
+        if (g_isGamePlaying && canThrow) UpdateThrowBullet();
     }
 
     Vector3 point, normal;
@@ -123,5 +124,15 @@ public class ThrowBullet : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawSphere(point, 0.2f);
         Gizmos.DrawLine(point, point + normal);
+    }
+
+    public void AllowThrow ()
+    {
+        canThrow = true;
+    }
+
+    public void DisallowThrow ()
+    {
+        canThrow = false;
     }
 }

@@ -39,7 +39,7 @@ public class GameCamera : MonoBehaviour
                 targetPos = realRatio;
             }
 
-            dolly.m_PathPosition = Mathf.Lerp(dolly.m_PathPosition, targetPos, Time.smoothDeltaTime / 10);
+            dolly.m_PathPosition = Mathf.Lerp(dolly.m_PathPosition, targetPos, Time.smoothDeltaTime / 3);
         }
     }
 
