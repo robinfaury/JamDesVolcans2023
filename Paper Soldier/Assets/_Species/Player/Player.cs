@@ -9,7 +9,7 @@ using UnityEngine.TextCore.Text;
 public class Player : MonoBehaviour
 {
 
-    [Title ("PARAMETERS")]
+    [Title("PARAMETERS")]
     [Range(0f, 1f)] public float movementTickPercent = 0.5f;
     public AnimationCurve walkFCurve;
     public AnimationCurve walkVCurve;
@@ -20,13 +20,13 @@ public class Player : MonoBehaviour
     public Sound jumpSound;
     public Sound fallSound;
 
-    [Title ("REFERENCES")]
+    [Title("REFERENCES")]
     public EventListener eventListener;
     public Animator animator;
     public Transform model;
     public GameObject footPrintPrefab;
 
-    [Title ("DEBUG & RUNTIME")]
+    [Title("DEBUG & RUNTIME")]
     public bool isMoving;
 
     float animationScale;
@@ -44,22 +44,26 @@ public class Player : MonoBehaviour
         };
     }
 
-    IEnumerator Start ()
+    IEnumerator Start()
     {
         eventListener.onEvent += Event;
-        while (true) {
-            while (isMoving) {
+        while (true)
+        {
+            while (isMoving)
+            {
 
                 Action action = Action.DontMove;
                 int perseption_width = 5;
-                int character_index_x = perseption_width/2;
+                int character_index_x = perseption_width / 2;
                 CellDatas[,,] perseption = Perceive(perseption_width, 2, 2);
                 Vector3Int current_index_cell = g_currentLevel.PositionToIndex(transform.position);
 
-                if (current_index_cell.y == 0) {
+                if (current_index_cell.y == 0)
+                {
                     action = Action.Fall;
                 }
-                else {
+                else
+                {
                     // Déplacement de la logique de fall dans le movement
                     // Pour enchainer la chute directement après le déplacement
                     /*
@@ -68,14 +72,18 @@ public class Player : MonoBehaviour
                     }
                     */
                 }
-                if (action == Action.DontMove) {
-                    if (perseption[character_index_x, 1, 1] == CellDatas.Empty) {
+                if (action == Action.DontMove)
+                {
+                    if (perseption[character_index_x, 1, 1] == CellDatas.Empty)
+                    {
                         action = perseption[character_index_x, 0, 1] == CellDatas.Empty ? Action.Forward : Action.JumpForward;
                     }
-                    else if (perseption[character_index_x - 1, 1, 1] == CellDatas.Empty && perseption[character_index_x - 1, 1, 0] == CellDatas.Empty) {
+                    else if (perseption[character_index_x - 1, 1, 1] == CellDatas.Empty && perseption[character_index_x - 1, 1, 0] == CellDatas.Empty)
+                    {
                         action = perseption[character_index_x - 1, 0, 0] == CellDatas.Empty ? Action.Left : Action.JumpLeft;
                     }
-                    else if (perseption[character_index_x + 1, 1, 1] == CellDatas.Empty && perseption[character_index_x + 1, 1, 0] == CellDatas.Empty) {
+                    else if (perseption[character_index_x + 1, 1, 1] == CellDatas.Empty && perseption[character_index_x + 1, 1, 0] == CellDatas.Empty)
+                    {
                         action = perseption[character_index_x + 1, 0, 0] == CellDatas.Empty ? Action.Right : Action.JumpRight;
                     }
                     else if (perseption[character_index_x - 1, 1, 1] == CellDatas.Solid && perseption[character_index_x - 1, 0, 0] == CellDatas.Solid)
@@ -87,36 +95,39 @@ public class Player : MonoBehaviour
                         action = Action.JumpRight;
                     }
                 }
-                if (action == Action.DontMove) {
+                if (action == Action.DontMove)
+                {
                     action = Action.AboutFace;
                 }
 
                 int tickAmount = 1;
                 string trigger = "walk";
-                if (action == Action.JumpForward || action == Action.JumpRight || action == Action.JumpLeft) {
+                if (action == Action.JumpForward || action == Action.JumpRight || action == Action.JumpLeft)
+                {
                     tickAmount = 2;
                     trigger = "jump";
                 }
                 float tickDuration = TickManager.TickDuration * movementTickPercent * tickAmount;
 
-                switch (action) {
-                    case Action.Forward: 
+                switch (action)
+                {
+                    case Action.Forward:
                         Move(walkFCurve, walkVCurve, transform.position, transform.forward, tickDuration, trigger, action);
                         break;
-                    case Action.Right: 
+                    case Action.Right:
                         Move(walkFCurve, walkVCurve, transform.position, transform.right, tickDuration, trigger, action);
                         break;
-                    case Action.Left: 
-                        Move(walkFCurve, walkVCurve, transform.position, - transform.right, tickDuration, trigger, action);
+                    case Action.Left:
+                        Move(walkFCurve, walkVCurve, transform.position, -transform.right, tickDuration, trigger, action);
                         break;
-                    case Action.JumpForward: 
-                        Move(jumpFCurve, jumpVCurve, transform.position, transform.up + transform.forward, tickDuration, trigger, action); 
+                    case Action.JumpForward:
+                        Move(jumpFCurve, jumpVCurve, transform.position, transform.up + transform.forward, tickDuration, trigger, action);
                         break;
-                    case Action.JumpRight: 
-                        Move(jumpFCurve, jumpVCurve, transform.position, transform.up + transform.right, tickDuration, trigger, action); 
+                    case Action.JumpRight:
+                        Move(jumpFCurve, jumpVCurve, transform.position, transform.up + transform.right, tickDuration, trigger, action);
                         break;
-                    case Action.JumpLeft: 
-                        Move(jumpFCurve, jumpVCurve, transform.position, transform.up - transform.right, tickDuration, trigger, action); 
+                    case Action.JumpLeft:
+                        Move(jumpFCurve, jumpVCurve, transform.position, transform.up - transform.right, tickDuration, trigger, action);
                         break;
                     case Action.Fall:
                         break;
@@ -140,35 +151,34 @@ public class Player : MonoBehaviour
 
     public void Move(AnimationCurve f, AnimationCurve v, Vector3 start, Vector3 delta, float tickDuration, string trigger, Action action)
     {
-        StartCoroutine(Routine()); IEnumerator Routine ()
+        StartCoroutine(Routine()); IEnumerator Routine()
         {
             Debug.Log("Move");
 
             animator.SetTrigger(trigger);
             Vector3 end = start + delta;
             Vector3 directionStart = transform.forward;
-            Vector3 directionEnd = (end - start).WithY (0).normalized;
+            Vector3 directionEnd = (end - start).WithY(0).normalized;
 
-<<<<<<< HEAD
-            Vector3Int index = g_currentLevel.PositionToIndex (end - Vector3.up);
-            fallOnMovement = g_currentLevel.map [index.x, index.y, index.z] == CellDatas.Empty;
-=======
+            Vector3Int index = g_currentLevel.PositionToIndex(end - Vector3.up);
+            fallOnMovement = g_currentLevel.map[index.x, index.y, index.z] == CellDatas.Empty;
+
             Vector3Int cell = g_currentLevel.PositionToIndex(start);
             g_currentLevel.map[cell.x, cell.y, cell.z] = CellDatas.Empty;
             cell = g_currentLevel.PositionToIndex(end);
             g_currentLevel.map[cell.x, cell.y, cell.z] = CellDatas.Character;
->>>>>>> 7e47791cbbc2ef84fc8b342b95d27de855858dab
 
             float duration = tickDuration * movementTickPercent;
             Vector3 df = (end - start).WithY(0).normalized;
             float dv = end.y - start.y;
             Vector3 simulatedPos = Vector3.zero;
 
-            float percent = 0; while ((percent += Time.deltaTime / duration) < 1) {
+            float percent = 0; while ((percent += Time.deltaTime / duration) < 1)
+            {
 
                 // Move 
                 Vector3 lastPos = simulatedPos;
-                simulatedPos = df * f.Evaluate (percent) + Vector3.up * dv * v.Evaluate (percent);
+                simulatedPos = df * f.Evaluate(percent) + Vector3.up * dv * v.Evaluate(percent);
                 model.forward = Vector3.Lerp(directionStart, directionEnd, rotationCurve.Evaluate(percent));
                 transform.position += simulatedPos - lastPos;
 
@@ -198,21 +208,25 @@ public class Player : MonoBehaviour
             Vector3 endPoint = Vector3.zero;
 
             // Chute mortelle ?
-            for (int y = index.y - 1; y > 0; y--) {
-                if (g_currentLevel.map[index.x, y, index.z] == CellDatas.Solid) {
+            for (int y = index.y - 1; y > 0; y--)
+            {
+                if (g_currentLevel.map[index.x, y, index.z] == CellDatas.Solid)
+                {
                     isDeath = false;
-                    endPoint = g_currentLevel.GetCellBottomAt(new Vector3 (index.x, y, index.z));
-                    break;  
+                    endPoint = g_currentLevel.GetCellBottomAt(new Vector3(index.x, y, index.z));
+                    break;
                 }
             }
 
             // Mort de chute
-            if (isDeath) {
+            if (isDeath)
+            {
                 g_gameCamera.StopMovement();
 
                 float startFallTime = Time.time;
                 float fallDuration = 1;
-                while (Time.time - startFallTime < fallDuration) {
+                while (Time.time - startFallTime < fallDuration)
+                {
                     velocity -= Vector3.up * Time.deltaTime * 10;
                     transform.position += velocity * Time.deltaTime;
                     yield return null;
@@ -222,12 +236,14 @@ public class Player : MonoBehaviour
             }
 
             // Pénalité de chute
-            else {
+            else
+            {
                 float fallHeight = index.y - endPoint.y - g_currentLevel.cellSize / 4;
-                float fallDuration = Mathf.Sqrt ((2 * fallHeight) / 10);
+                float fallDuration = Mathf.Sqrt((2 * fallHeight) / 10);
                 Debug.Log(fallHeight + " " + fallDuration);
                 float fallTime = 0;
-                while ((fallTime += Time.deltaTime / fallDuration) < 1) {
+                while ((fallTime += Time.deltaTime / fallDuration) < 1)
+                {
                     velocity -= Vector3.up * Time.deltaTime * 10;
                     transform.position += velocity * Time.deltaTime;
                     yield return null;
@@ -244,18 +260,18 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void Rotate ()
+    public void Rotate()
     {
 
     }
 
-    public void StartMovement ()
+    public void StartMovement()
     {
         isMoving = true;
         animationScale = 1;
     }
 
-    public void StopMovement ()
+    public void StopMovement()
     {
         isMoving = false;
     }
@@ -264,10 +280,13 @@ public class Player : MonoBehaviour
     {
         CellDatas[,,] perseption = new CellDatas[width, height, depth];
         Vector3 position = transform.position;
-        for (int w = 0; w < width; ++w) {
-            for (int h = 0; h < height; ++h) {
-                for (int d = 0; d < depth; ++d) {
-                    Vector3Int cell = g_currentLevel.PositionToIndex(position+(w-(int)(width/2))*transform.right+h*transform.up+d*transform.forward);
+        for (int w = 0; w < width; ++w)
+        {
+            for (int h = 0; h < height; ++h)
+            {
+                for (int d = 0; d < depth; ++d)
+                {
+                    Vector3Int cell = g_currentLevel.PositionToIndex(position + (w - (int)(width / 2)) * transform.right + h * transform.up + d * transform.forward);
                     perseption[w, h, d] = g_currentLevel.map[cell.x, cell.y, cell.z];
                 }
             }
@@ -277,7 +296,8 @@ public class Player : MonoBehaviour
 
     bool HasPath(CellDatas[,,] perseption)
     {
-        if (perseption[1, 1, 1] == CellDatas.Empty) {
+        if (perseption[1, 1, 1] == CellDatas.Empty)
+        {
             return true;
         }
         return perseption[0, 1, 1] == CellDatas.Empty;
@@ -300,9 +320,9 @@ public class Player : MonoBehaviour
     {
         if (g_currentLevel == null || g_currentLevel.walkableMap == null) return;
 
-        int x = g_currentLevel.ConvertCoordX (transform.position.x);
-        int y = g_currentLevel.ConvertCoordY (transform.position.y);
-        int z = g_currentLevel.ConvertCoordZ (transform.position.z);
+        int x = g_currentLevel.ConvertCoordX(transform.position.x);
+        int y = g_currentLevel.ConvertCoordY(transform.position.y);
+        int z = g_currentLevel.ConvertCoordZ(transform.position.z);
 
         DrawAt(0, 0, 1);
         void DrawAt(int xo, int yo, int zo)
@@ -311,10 +331,11 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void Event (string eventName)
+    public void Event(string eventName)
     {
-        if (eventName.Contains ("StepSound") && !isFalling) stepSound.Play();
-        if (eventName.Contains ("StepPart") && !isFalling) {
+        if (eventName.Contains("StepSound") && !isFalling) stepSound.Play();
+        if (eventName.Contains("StepPart") && !isFalling)
+        {
             GameObject footPrint = Instantiate(footPrintPrefab);
             footPrint.transform.position = transform.position + Vector3.up * 0.05f;
             footPrint.transform.forward = transform.forward;
@@ -326,7 +347,12 @@ public class Player : MonoBehaviour
         if (eventName == "Fall" && fallOnMovement) lunchFall = true;
     }
 
-    public void OnPlayerDeath ()
+    public void DeathByHit()
+    {
+
+    }
+
+    public void OnPlayerDeath()
     {
         g_onPlayerDeath?.Invoke();
         g_gameManager.RebootLevel();

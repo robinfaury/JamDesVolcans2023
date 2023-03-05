@@ -48,6 +48,8 @@ public class GameManager : MonoBehaviour
         g_levels = levels;
         g_gameCamera = gameCamera;
         g_throwBullet = throwBullet;
+        if (g_throwBullet == null)
+            g_throwBullet = FindObjectOfType<ThrowBullet>();
     }
 
     void Start()

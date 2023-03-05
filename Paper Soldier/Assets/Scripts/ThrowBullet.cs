@@ -166,6 +166,9 @@ public class ThrowBullet : MonoBehaviour
 
         while (lTime < 1f)
         {
+            if (bullet == null)
+                yield break;
+
             bullet.position = Vector3.Lerp(startposition, targetPosition,lTime*lTime);
             bullet.localScale = Vector3.Lerp(startScale, endScale, lTime*lTime);
             bullet.localRotation *= rotationAcceleration;
