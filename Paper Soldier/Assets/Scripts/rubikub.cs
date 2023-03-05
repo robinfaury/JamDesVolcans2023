@@ -64,30 +64,6 @@ public class rubikub : MonoBehaviour
                 rubikub_transform.position += new Vector3(0, 3, 0);
 
             }
-            //currentState = ++currentState % 4;
-            //Vector3Int cell_front = g_currentLevel.PositionToIndex(block.position + block.forward);
-            //if (g_currentLevel.map[cell_front.x, cell_front.y, cell_front.z] != CellDatas.Boulette)
-            //{
-            //    if (currentState == 0)
-            //    {
-            //        Vector3Int cell_base = g_currentLevel.PositionToIndex(kill.position);
-            //        Vector3Int cell_kill = g_currentLevel.PositionToIndex(kill.position - kill.forward);
-            //        g_currentLevel.map[cell_base.x, cell_base.y, cell_base.z] = CellDatas.Empty;
-            //        g_currentLevel.map[cell_kill.x, cell_kill.y, cell_kill.z] = CellDatas.Empty;
-            //    }
-            //    SetPosition();
-            //    if (currentState == 2)
-            //    {
-            //        Vector3Int cell_base = g_currentLevel.PositionToIndex(kill.position);
-            //        Vector3Int cell_kill = g_currentLevel.PositionToIndex(kill.position - kill.forward);
-            //        if (g_currentLevel.map[cell_base.x, cell_base.y, cell_base.z] == CellDatas.Character || g_currentLevel.map[cell_kill.x, cell_kill.y, cell_kill.z] == CellDatas.Character)
-            //        {
-            //            g_player.DeathByHit();
-            //        }
-            //        g_currentLevel.map[cell_base.x, cell_base.y, cell_base.z] = CellDatas.Solid;
-            //        g_currentLevel.map[cell_kill.x, cell_kill.y, cell_kill.z] = CellDatas.Solid;
-            //    }
-            //}
         };
     }
 
