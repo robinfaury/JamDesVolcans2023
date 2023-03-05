@@ -163,10 +163,8 @@ public class Bullet : MonoBehaviour
 
     }
 
-    bool isGiggle = false;
     IEnumerator GiggleAnim(float delay = 0, bool onlyUp = false)
     {
-        isGiggle = true;
         yield return new WaitForSeconds(delay);
         Vector3 baseScale = GameManager.g_throwBullet.endScale;
 
@@ -189,7 +187,6 @@ public class Bullet : MonoBehaviour
             yield return null;
         }
         transform.localScale = baseScale;
-        isGiggle = true;
     }
 
     private void OnDestroy()

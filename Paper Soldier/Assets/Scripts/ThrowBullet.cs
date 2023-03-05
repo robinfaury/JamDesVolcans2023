@@ -45,6 +45,7 @@ public class ThrowBullet : MonoBehaviour
         camera = GetComponentInParent<Camera>();
         StrawPivot.localPosition = new Vector3(0, -0.41f, 0.457f);
         CreateUI();
+
         /*
         bulletPreview = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
         bulletPreview.GetComponent<Collider>().enabled = false;
@@ -127,9 +128,10 @@ public class ThrowBullet : MonoBehaviour
             Vector3 cellCenter = g_currentLevel.GetCellCenter(index.x, index.y, index.z);
 
             if (g_currentLevel.map[index.x, index.y, index.z] == CellDatas.Empty) {
-                cursorPreview.gameObject.SetActive(bulletCount > 0);
+                cursorPreview.gameObject.SetActive(bulletCount > 0 && canThrow);
                 cursorPreview.position = Vector3.Lerp(cursorPreview.position, cellCenter, .4f);
-                cursorPreview.transform.up = normal;
+                cursorPreview.rotation = Quaternion.identity;
+                //cursorPreview.transform.up = normal;
 
                 //throw bullet
                 if ((Mouse.current.leftButton.wasPressedThisFrame || Mouse.current.rightButton.wasPressedThisFrame)
@@ -215,6 +217,8 @@ public class ThrowBullet : MonoBehaviour
     public void DisallowThrow()
     {
         canThrow = false;
+        cursorPreview.gameObject.SetActive(false);
+
     }
 
     public void Reset()
