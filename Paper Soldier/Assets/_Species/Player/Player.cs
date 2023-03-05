@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using Sirenix.OdinInspector;
 using static GameManager;
+using UnityEngine.TextCore.Text;
 
 public class Player : MonoBehaviour
 {
@@ -148,8 +149,15 @@ public class Player : MonoBehaviour
             Vector3 directionStart = transform.forward;
             Vector3 directionEnd = (end - start).WithY (0).normalized;
 
+<<<<<<< HEAD
             Vector3Int index = g_currentLevel.PositionToIndex (end - Vector3.up);
             fallOnMovement = g_currentLevel.map [index.x, index.y, index.z] == CellDatas.Empty;
+=======
+            Vector3Int cell = g_currentLevel.PositionToIndex(start);
+            g_currentLevel.map[cell.x, cell.y, cell.z] = CellDatas.Empty;
+            cell = g_currentLevel.PositionToIndex(end);
+            g_currentLevel.map[cell.x, cell.y, cell.z] = CellDatas.Character;
+>>>>>>> 7e47791cbbc2ef84fc8b342b95d27de855858dab
 
             float duration = tickDuration * movementTickPercent;
             Vector3 df = (end - start).WithY(0).normalized;
@@ -172,6 +180,7 @@ public class Player : MonoBehaviour
 
             if (!isFalling) transform.position = end;
             model.forward = directionEnd;
+
             g_onPlayerChanged?.Invoke(end);
         }
     }
