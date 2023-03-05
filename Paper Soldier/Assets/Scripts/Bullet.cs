@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using UnityEngine;
 
 using UnityEngine.InputSystem;
@@ -74,13 +75,15 @@ public class Bullet : MonoBehaviour
             {
                 if (AreNeighbours(this, allBullets[i]))
                 {
-                    allBullets[i].SphereToCube();
+                    allBullets[i].SphereToCube(.02f);
                     sphereToCube = true;
                 }
             }
 
             if (sphereToCube)
-                SphereToCube();
+                SphereToCube(giggle:false);
+
+            StartCoroutine(GiggleAnim());
         }
     }
 
@@ -141,8 +144,10 @@ public class Bullet : MonoBehaviour
         allBullets.Clear();
     }
 
-    private void SphereToCube()
+    private void SphereToCube(float delay = 0, bool giggle = true)
     {
+        if(giggle)
+            StartCoroutine(GiggleAnim(delay));
         if (isCube) return;
 
         isCube = true;
@@ -156,37 +161,40 @@ public class Bullet : MonoBehaviour
                                         availableRotation[Random.Range(0, availableRotation.Count)]);
         cube.GetComponent<Renderer>().material.color = GetComponent<Renderer>().material.color;
 
-        StartCoroutine(GiggleAnim());
     }
 
-    IEnumerator GiggleAnim()
+    bool isGiggle = false;
+    IEnumerator GiggleAnim(float delay = 0, bool onlyUp = false)
     {
-        Vector3 middleScale = Vector3.one * .9f;
+        isGiggle = true;
+        yield return new WaitForSeconds(delay);
+        Vector3 baseScale = GameManager.g_throwBullet.endScale;
+
+        Vector3 middleScale = baseScale * .95f;
         float lTime = 0;
-        float lDuration = 0.3f;
+        float lDuration = 0.1f;
         float lStartTime = Time.time;
 
-        while(lTime < 1f)
+        while (lTime < 1f)
         {
-            lTime = (Time.time - lStartTime)/lDuration;
-            transform.localScale = Mathfx.Sinerp(Vector3.one, middleScale, lTime);
+            lTime = (Time.time - lStartTime) / lDuration;
+            transform.localScale = Mathfx.Sinerp(baseScale, middleScale, lTime);
             yield return null;
         }
         lStartTime = Time.time;
         while (lTime < 1f)
         {
             lTime = (Time.time - lStartTime) / lDuration;
-            transform.localScale = Mathfx.Coserp(middleScale, Vector3.one, lTime);
+            transform.localScale = Vector3.Lerp(middleScale, baseScale, lTime);
             yield return null;
         }
-        transform.localScale = Vector3.one;
+        transform.localScale = baseScale;
+        isGiggle = true;
     }
 
     private void OnDestroy()
     {
         Destroy(effect);
     }
-
-
    
 }
