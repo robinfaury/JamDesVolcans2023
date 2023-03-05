@@ -110,7 +110,7 @@ public class ThrowBullet : MonoBehaviour
 
         bullet.position = targetPosition;
         bullet.localScale = endScale;
-        g_currentLevel.map[cell.x, cell.y, cell.z] = CellDatas.Solid;
+        g_currentLevel.map[cell.x, cell.y, cell.z] = CellDatas.Boulette;
 
         bullet.gameObject.GetComponent<Bullet>().OnBulletIsOnTarget();
 
