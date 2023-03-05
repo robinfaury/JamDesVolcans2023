@@ -39,7 +39,7 @@ public class Obstacle_Picko : MonoBehaviour
         {
             currentState = ++currentState % 4;
             Vector3Int cell_front = g_currentLevel.PositionToIndex(block.position + block.forward);
-            if (g_currentLevel.map[cell_front.x, cell_front.y, cell_front.z] != CellDatas.Solid)
+            if (g_currentLevel.map[cell_front.x, cell_front.y, cell_front.z] != CellDatas.Boulette)
             {
                 if (currentState == 0)
                 {

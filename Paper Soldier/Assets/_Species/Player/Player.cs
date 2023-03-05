@@ -18,7 +18,9 @@ public class Player : MonoBehaviour
     public AnimationCurve rotationCurve;
     public Sound stepSound;
     public Sound jumpSound;
+    public Sound fallDeathSound;
     public Sound fallSound;
+    public Sound penalitySound;
 
     [Title ("REFERENCES")]
     public EventListener eventListener;
@@ -48,7 +50,7 @@ public class Player : MonoBehaviour
     {
         eventListener.onEvent += Event;
         while (true) {
-            while (isMoving) {
+            while (isMoving && !isFalling) {
 
                 Action action = Action.DontMove;
                 int perseption_width = 5;
@@ -142,8 +144,6 @@ public class Player : MonoBehaviour
     {
         StartCoroutine(Routine()); IEnumerator Routine ()
         {
-            Debug.Log("Move");
-
             animator.SetTrigger(trigger);
             Vector3 end = start + delta;
             Vector3 directionStart = transform.forward;
@@ -171,7 +171,7 @@ public class Player : MonoBehaviour
                 transform.position += simulatedPos - lastPos;
 
                 // Fall => lance la routine
-                if (lunchFall) { Fall(index); lunchFall = false; }
+                if (lunchFall) { Fall(index); lunchFall = false; fallOnMovement = false; }
 
                 yield return null;
             }
@@ -189,7 +189,6 @@ public class Player : MonoBehaviour
         {
             isFalling = true;
             animationScale = 0.1f;
-            fallSound.Play();
             isMoving = false;
             Vector3 velocity = Vector3.zero;
             bool isDeath = true;
@@ -206,6 +205,7 @@ public class Player : MonoBehaviour
 
             // Mort de chute
             if (isDeath) {
+                fallDeathSound.Play();
                 g_gameCamera.StopMovement();
 
                 float startFallTime = Time.time;
@@ -221,9 +221,9 @@ public class Player : MonoBehaviour
 
             // Pénalité de chute
             else {
+                fallSound.Play();
                 float fallHeight = index.y - endPoint.y - g_currentLevel.cellSize / 4;
                 float fallDuration = Mathf.Sqrt ((2 * fallHeight) / 10);
-                Debug.Log(fallHeight + " " + fallDuration);
                 float fallTime = 0;
                 while ((fallTime += Time.deltaTime / fallDuration) < 1) {
                     velocity -= Vector3.up * Time.deltaTime * 10;
@@ -231,12 +231,14 @@ public class Player : MonoBehaviour
                     yield return null;
                 }
 
-                Debug.Log("zerzer");
-                transform.position = endPoint;
-                isFalling = false;
-                lunchFall = false;
-                fallOnMovement = false;
                 animationScale = 1;
+                transform.position = g_currentLevel.GetCellBottomAt(transform.position);
+                penalitySound.Play();
+
+                float resetWaitTime = Mathf.CeilToInt (fallDuration / TickManager.TickDuration);
+                yield return new WaitForSeconds(resetWaitTime);
+
+                isFalling = false;
                 isMoving = true;
             }
         }

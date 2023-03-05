@@ -221,5 +221,6 @@ public enum CellDatas
     Empty,
     Solid,
     NextLevelCell,
-    Character
+    Character,
+    Boulette
 }
