@@ -9,13 +9,15 @@ public class GameManager : MonoBehaviour
 
     [Title("BOUCLE")]
     public float transitionDelay = 4;
+    public int defautlLevelIndex = 0;
 
     [Title("REFERENCES")]
     public CanvasGroup canvasGroup;
     public GameObject confettiFinishLevel;
     public Sound music;
     public Sound levelSuccess;
-    public Sound coucouSound;
+    public Sound bastonSound;
+    public Sound playerSuccess;
     public List<Level> levels;
 
     [Title("REFERENCES GLOBALES")]
@@ -45,7 +47,7 @@ public class GameManager : MonoBehaviour
     {
         g_player = player;
         g_tickManager = tickManager;
-        g_currentLevelIndex = 0;
+        g_currentLevelIndex = defautlLevelIndex;
         g_gameManager = this;
         g_levels = levels;
         g_gameCamera = gameCamera;
@@ -72,9 +74,9 @@ public class GameManager : MonoBehaviour
             g_tickManager.StartTicking();
             g_player.StartMovement();
 
-            LoadLevel(0);
+            LoadLevel(defautlLevelIndex);
             canvasGroup.alpha = 0;
-            coucouSound.Play();
+            bastonSound.Play();
 
             yield return new WaitForEndOfFrame();
             g_isGamePlaying = true;
@@ -115,14 +117,14 @@ public class GameManager : MonoBehaviour
             g_onGameReboot?.Invoke();
 
             LoadLevel(g_currentLevelIndex);
-            if (!skipTransi) yield return new WaitForSeconds(transitionDelay);
+            if (!skipTransi) yield return new WaitForSeconds(transitionDelay * 2);
             if (!skipTransi) FadeFromTo(1, 0, transitionDelay);
 
             g_player.StartMovement();
             g_tickManager.StartTicking();
             g_throwBullet.AllowThrow();
             canvasGroup.alpha = 0;
-            coucouSound.Play();
+            bastonSound.Play();
             g_isGamePlaying = true;
         }
     }
@@ -137,12 +139,14 @@ public class GameManager : MonoBehaviour
             confetti.transform.position = g_currentLevel.endPoint.position;
             confetti.transform.forward = -g_player.transform.forward;
             levelSuccess.Play();
+            playerSuccess.Play();
             Destroy(confetti, 5);
 
             g_tickManager.StopTicking();
             g_player.StopMovement();
             g_throwBullet.DisallowThrow();
 
+            yield return new WaitForSeconds(transitionDelay);
             FadeFromTo(0, 1, transitionDelay);
             yield return new WaitForSeconds(transitionDelay);
 
@@ -155,7 +159,7 @@ public class GameManager : MonoBehaviour
             g_tickManager.StartTicking();
             g_throwBullet.AllowThrow();
             canvasGroup.alpha = 0;
-            coucouSound.Play();
+            bastonSound.Play();
             g_isGamePlaying = true;
         }
     }

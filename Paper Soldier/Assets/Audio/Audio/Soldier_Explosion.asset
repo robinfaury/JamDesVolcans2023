@@ -42,4 +42,19 @@ MonoBehaviour:
       minValue: 0.9
       maxValue: 1.1
     playProbability: 1
-  sources: []
+  - clips:
+    - {fileID: 8300000, guid: 7072ebf62b1e2d348941048313fd6989, type: 3}
+    volume:
+      random: 1
+      defaultValue: 1
+      minValue: 0.5
+      maxValue: 0.6
+    pitch:
+      random: 0
+      defaultValue: 1
+      minValue: 0.8
+      maxValue: 1.2
+    playProbability: 1
+  sources:
+  - {fileID: 0}
+  - {fileID: 0}

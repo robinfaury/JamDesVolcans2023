@@ -15,6 +15,7 @@ public class ThrowBullet : MonoBehaviour
     public Transform prefabBullet;
     public Transform StrawPivot;
     public Transform StrawOutput;
+    public GameObject bulletParticles;
     //UI
     public bool activateUI = false;
     private Transform UICanvas;
@@ -183,14 +184,20 @@ public class ThrowBullet : MonoBehaviour
 
         bullet.position = targetPosition;
         bullet.localScale = endScale;
-        g_currentLevel.map[cell.x, cell.y, cell.z] = CellDatas.Boulette;
 
-        bullet.gameObject.GetComponent<Bullet>().OnBulletIsOnTarget();
+        if (g_currentLevel.map[cell.x, cell.y, cell.z] == CellDatas.Character) {
+            Destroy(bullet.gameObject);
+            Destroy(Instantiate(bulletParticles, g_player.transform.position, Quaternion.identity), 2);
+            g_player.DeathByHit();
+            Bullet.allBullets.Remove(bullet.GetComponent<Bullet> ());
+        }
+        else {
+            g_currentLevel.map[cell.x, cell.y, cell.z] = CellDatas.Boulette;
+            bullet.gameObject.GetComponent<Bullet>().OnBulletIsOnTarget();
+        }
 
         UpdateUI();
-
         isThrowing = false;
-
     }
 
     private void OnDrawGizmos()
