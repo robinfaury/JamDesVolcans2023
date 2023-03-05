@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     public CanvasGroup canvasGroup;
     public GameObject confettiFinishLevel;
     public Sound music;
+    public Sound levelSuccess;
     public Sound coucouSound;
     public List<Level> levels;
 
@@ -21,6 +22,7 @@ public class GameManager : MonoBehaviour
     public Player player;
     public TickManager tickManager;
     public GameCamera gameCamera;
+    public ThrowBullet throwBullet;
 
     public static int g_currentLevelIndex;
     public static Level g_currentLevel;
@@ -30,7 +32,9 @@ public class GameManager : MonoBehaviour
     public static Player g_player;
     public static TickManager g_tickManager;
     public static GameManager g_gameManager;
+    public static ThrowBullet g_throwBullet;
 
+    public static Score g_score = new Score();
     public static bool g_isGamePlaying;
 
     public static System.Action<Vector3> g_onPlayerChanged;
@@ -45,6 +49,10 @@ public class GameManager : MonoBehaviour
         g_gameManager = this;
         g_levels = levels;
         g_gameCamera = gameCamera;
+        g_throwBullet = throwBullet;
+        if (g_throwBullet == null)
+            g_throwBullet = FindObjectOfType<ThrowBullet>();
+        g_score.NewGame();
     }
 
     void Start()
@@ -82,12 +90,15 @@ public class GameManager : MonoBehaviour
         g_currentLevel.GenerateVoxel();
         g_gameCamera.SetVCam(g_currentLevel.virtualCamera);
         g_gameCamera.StartMovement();
+        g_throwBullet.AllowThrow();
 
         Vector3 gridBottomPos = g_currentLevel.GetCellBottomAt (level.startPoint.position);
         g_player.transform.position = gridBottomPos;
         g_player.transform.forward = (level.endPoint.position - level.startPoint.position).WithY(0).normalized;
 
         g_onPlayerChanged += g_currentLevel.OnPlayerPositionChanged;
+
+        g_throwBullet.Reset();
     }
 
     public void RebootLevel (bool skipTransi = false)
@@ -96,6 +107,7 @@ public class GameManager : MonoBehaviour
         {
             g_tickManager.StopTicking();
             g_player.StopMovement();
+            g_throwBullet.DisallowThrow();
 
             if (!skipTransi) FadeFromTo(0, 1, transitionDelay);
             if (!skipTransi) yield return new WaitForSeconds(transitionDelay);
@@ -108,6 +120,7 @@ public class GameManager : MonoBehaviour
 
             g_player.StartMovement();
             g_tickManager.StartTicking();
+            g_throwBullet.AllowThrow();
             canvasGroup.alpha = 0;
             coucouSound.Play();
             g_isGamePlaying = true;
@@ -116,15 +129,19 @@ public class GameManager : MonoBehaviour
 
     public void NextLevel ()
     {
+        g_score.DebugScore();
+
         StartCoroutine(Routine()); IEnumerator Routine()
         {
             GameObject confetti = Instantiate (confettiFinishLevel);
             confetti.transform.position = g_currentLevel.endPoint.position;
             confetti.transform.forward = -g_player.transform.forward;
+            levelSuccess.Play();
             Destroy(confetti, 5);
 
             g_tickManager.StopTicking();
             g_player.StopMovement();
+            g_throwBullet.DisallowThrow();
 
             FadeFromTo(0, 1, transitionDelay);
             yield return new WaitForSeconds(transitionDelay);
@@ -136,6 +153,7 @@ public class GameManager : MonoBehaviour
             FadeFromTo(1, 0, transitionDelay);
             g_player.StartMovement();
             g_tickManager.StartTicking();
+            g_throwBullet.AllowThrow();
             canvasGroup.alpha = 0;
             coucouSound.Play();
             g_isGamePlaying = true;

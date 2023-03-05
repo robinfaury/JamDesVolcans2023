@@ -29,6 +29,7 @@ public class TickManager : MonoBehaviour
         if (Keyboard.current.digit1Key.wasPressedThisFrame) Time.timeScale = 1;
         if (Keyboard.current.digit2Key.wasPressedThisFrame) Time.timeScale = 2;
         if (Keyboard.current.digit3Key.wasPressedThisFrame) Time.timeScale = 4;
+        if (Keyboard.current.digit8Key.wasPressedThisFrame) g_player.DeathByHit();
         if (Keyboard.current.digit9Key.wasPressedThisFrame) g_gameManager.RebootLevel(true);
     }
 

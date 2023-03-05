@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b60aff6cebb42f6419a8796997b0ab4a, type: 3}
+  m_Name: Soldier_Death
+  m_EditorClassIdentifier: 
+  audioMixer: {fileID: 0}
+  volume: 1
+  pitch: 1
+  soundClips:
+  - clips:
+    - {fileID: 8300000, guid: 4ba6f22ff43ac6b4ab0ac6c5c49d5645, type: 3}
+    volume:
+      random: 0
+      defaultValue: 1
+      minValue: 0.8
+      maxValue: 1.2
+    pitch:
+      random: 1
+      defaultValue: 1
+      minValue: 0.9
+      maxValue: 1.1
+    playProbability: 1
+  - clips:
+    - {fileID: 8300000, guid: 852974f56c9e1674d858cd0dd63374f0, type: 3}
+    volume:
+      random: 0
+      defaultValue: 1
+      minValue: 0.8
+      maxValue: 1.2
+    pitch:
+      random: 0
+      defaultValue: 1
+      minValue: 0.8
+      maxValue: 1.2
+    playProbability: 1
+  sources: []

@@ -22,6 +22,12 @@ public class Level : MonoBehaviour
     public LayerMask occlusionLayer;
     public CinemachineVirtualCamera virtualCamera;
 
+    [Title("SCORING AND BULLETS")]
+    public int maxBullet = 10;
+    public int optimalBulletScore = 5;
+    public int optimalTravelTickCount = 40;
+    public int badTravel = 80;
+
     [Title ("DEBUGGIN & RUNTIME")]
     public bool showGizmos;
     public bool autoRefresh;
