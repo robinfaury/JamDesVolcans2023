@@ -55,7 +55,7 @@ public class Obstacle_Picko : MonoBehaviour
                     Vector3Int cell_kill = g_currentLevel.PositionToIndex(kill.position - kill.forward);
                     if (g_currentLevel.map[cell_base.x, cell_base.y, cell_base.z] == CellDatas.Character || g_currentLevel.map[cell_kill.x, cell_kill.y, cell_kill.z] == CellDatas.Character)
                     {
-                        Debug.Log("Kill");
+                        g_player.DeathByHit();
                     }
                     g_currentLevel.map[cell_base.x, cell_base.y, cell_base.z] = CellDatas.Solid;
                     g_currentLevel.map[cell_kill.x, cell_kill.y, cell_kill.z] = CellDatas.Solid;
