@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
     public static TickManager g_tickManager;
     public static GameManager g_gameManager;
     public static ThrowBullet g_throwBullet;
+    public static Score g_score = new Score();
 
     public static bool g_isGamePlaying;
 
@@ -50,6 +51,7 @@ public class GameManager : MonoBehaviour
         g_throwBullet = throwBullet;
         if (g_throwBullet == null)
             g_throwBullet = FindObjectOfType<ThrowBullet>();
+        g_score.NewGame();
     }
 
     void Start()
@@ -123,6 +125,8 @@ public class GameManager : MonoBehaviour
 
     public void NextLevel ()
     {
+        g_score.DebugScore();
+
         StartCoroutine(Routine()); IEnumerator Routine()
         {
             GameObject confetti = Instantiate (confettiFinishLevel);

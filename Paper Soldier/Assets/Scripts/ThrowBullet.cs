@@ -16,6 +16,7 @@ public class ThrowBullet : MonoBehaviour
     public Transform StrawPivot;
     public Transform StrawOutput;
     //UI
+    public bool activateUI = false;
     private Transform UICanvas;
     public Sprite bulletSprite;
     private RectTransform UIGroup;
@@ -51,15 +52,17 @@ public class ThrowBullet : MonoBehaviour
 
     void CreateUI()
     {
+        if (!activateUI) return;
+
         GameObject bulletLayout = new GameObject("BulletLayout");
         HorizontalLayoutGroup hlg = bulletLayout.AddComponent<HorizontalLayoutGroup>();
         hlg.childForceExpandWidth = false;
         hlg.childForceExpandHeight = false;
         hlg.childControlWidth = false;
         hlg.childControlHeight = false;
-        hlg.padding = new RectOffset(10, 10, 10, 10);
+        hlg.padding = new RectOffset(40, 10, 10, 10);
         hlg.spacing = 10;
-        hlg.childAlignment = TextAnchor.MiddleCenter;
+        hlg.childAlignment = TextAnchor.MiddleLeft;
         bulletLayout.transform.SetParent(UICanvas);
         UIGroup = (RectTransform)bulletLayout.transform;
         UIGroup.SetAsFirstSibling();
@@ -69,13 +72,13 @@ public class ThrowBullet : MonoBehaviour
         UIGroup.offsetMin = Vector2.zero;
         UIGroup.offsetMax = Vector2.zero;
         UIGroup.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 120);
-        
     }
 
 
     void InitUI(int bulletCount)
     {
-        for(int i = 0; i < UIGroup.childCount; i++)
+        if (!activateUI) return;
+        for (int i = 0; i < UIGroup.childCount; i++)
         {
             Destroy(UIGroup.GetChild(i).gameObject);
         }
@@ -94,7 +97,8 @@ public class ThrowBullet : MonoBehaviour
 
     void UpdateUI()
     {
-        for(int i =0; i < bulletSprites.Count;i++)
+        if (!activateUI) return;
+        for (int i =0; i < bulletSprites.Count;i++)
         {
             bulletSprites[i].enabled = i < bulletCount;
         }
@@ -148,7 +152,7 @@ public class ThrowBullet : MonoBehaviour
     IEnumerator ThrowingBullet(Vector3 targetPosition, Vector3Int cell,bool isConstruction)
     {
         isThrowing = true;
-        bulletCount--;
+        
         sarbacane.Play();
         lastTimeShot = Time.time;
         float startTime = Time.time;
@@ -160,6 +164,11 @@ public class ThrowBullet : MonoBehaviour
 
         
         bullet.gameObject.GetComponent<Bullet>().Init(cell, g_currentLevel, isConstruction);
+        if (isConstruction)
+        {
+            bulletCount--;
+            g_score.OnBulletUsed();
+        }
 
         float lDuration = .5f;
         float lTime = 0f;

@@ -25,8 +25,8 @@ public class Level : MonoBehaviour
     [Title("SCORING AND BULLETS")]
     public int maxBullet = 10;
     public int optimalBulletScore = 5;
-    public int optimalTravel = 20;
-    public int badTravel = 40;
+    public int optimalTravelTickCount = 40;
+    public int badTravel = 80;
 
     [Title ("DEBUGGIN & RUNTIME")]
     public bool showGizmos;
