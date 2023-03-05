@@ -196,7 +196,7 @@ public class Player : MonoBehaviour
 
             // Chute mortelle ?
             for (int y = index.y - 1; y > 0; y--) {
-                if (g_currentLevel.map[index.x, y, index.z] == CellDatas.Solid) {
+                if (g_currentLevel.map[index.x, y, index.z] == CellDatas.Solid || g_currentLevel.map[index.x, y, index.z] == CellDatas.Boulette) {
                     isDeath = false;
                     endPoint = g_currentLevel.GetCellBottomAt(new Vector3 (index.x, y, index.z));
                     break;  
