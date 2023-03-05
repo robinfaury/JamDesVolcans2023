@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b60aff6cebb42f6419a8796997b0ab4a, type: 3}
+  m_Name: Soldier_Disapointed
+  m_EditorClassIdentifier: 
+  audioMixer: {fileID: 0}
+  volume: 1
+  pitch: 1
+  soundClips:
+  - clips:
+    - {fileID: 8300000, guid: aaa3671a2e7cbef4790df5fc11ee99dc, type: 3}
+    - {fileID: 8300000, guid: e953931c6ec01f846b8c3ee495727777, type: 3}
+    - {fileID: 8300000, guid: 6d221722f5ec0ff49afd8e02e92964ee, type: 3}
+    - {fileID: 8300000, guid: 1db57d14bd4be7f45af20fa815a585cc, type: 3}
+    - {fileID: 8300000, guid: 2efdcaa34ceb2e84583533996991d7dd, type: 3}
+    volume:
+      random: 0
+      defaultValue: 1
+      minValue: 0.8
+      maxValue: 1.2
+    pitch:
+      random: 1
+      defaultValue: 1
+      minValue: 0.9
+      maxValue: 1.2
+    playProbability: 1
+  sources: []

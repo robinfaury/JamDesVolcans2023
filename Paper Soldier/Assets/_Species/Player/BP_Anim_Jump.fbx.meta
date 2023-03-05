@@ -69,7 +69,14 @@ ModelImporter:
         messageOptions: 0
       - time: 0.55681825
         functionName: Event
-        data: Step
+        data: StepSound StePart
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.13074203
+        functionName: Event
+        data: StepSound StePart
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0

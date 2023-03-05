@@ -18,6 +18,10 @@ MonoBehaviour:
   soundClips:
   - clips:
     - {fileID: 8300000, guid: 3f478d1d8be4e994ba2c1e5b9c08161a, type: 3}
+    - {fileID: 8300000, guid: 5ea0be7aa0417c34c9d3f532b42509e2, type: 3}
+    - {fileID: 8300000, guid: dfe0d3bff826a434aaa010fce0b1808f, type: 3}
+    - {fileID: 8300000, guid: 59d7f9424a20ad14f8f399506013ee79, type: 3}
+    - {fileID: 8300000, guid: a597ad993a2b3ac4686ad74d439af9b2, type: 3}
     volume:
       random: 0
       defaultValue: 1

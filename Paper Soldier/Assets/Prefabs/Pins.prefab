@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1281079293235919364}
   - component: {fileID: 2767626078169101729}
   - component: {fileID: 111571880605942123}
+  - component: {fileID: 3341608741247624134}
   m_Layer: 0
   m_Name: Pins
   m_TagString: Untagged
@@ -83,3 +84,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &3341608741247624134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1913078184000037054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4066df26d012c734db08b9c8991e578e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pin_transform: {fileID: 1281079293235919364}

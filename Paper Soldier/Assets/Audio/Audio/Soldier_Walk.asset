@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b60aff6cebb42f6419a8796997b0ab4a, type: 3}
+  m_Name: Soldier_Walk
+  m_EditorClassIdentifier: 
+  audioMixer: {fileID: 0}
+  volume: 1
+  pitch: 1
+  soundClips:
+  - clips:
+    - {fileID: 8300000, guid: fb6d37ff4c75a584db0f855d992ed8f3, type: 3}
+    - {fileID: 8300000, guid: 07e760e08742a574c9526fd0271eda60, type: 3}
+    - {fileID: 8300000, guid: abbe4613601faf74ba42513ef6e2fcfb, type: 3}
+    - {fileID: 8300000, guid: e041be73ab14b274ea9541867925cb44, type: 3}
+    volume:
+      random: 1
+      defaultValue: 1
+      minValue: 0.9
+      maxValue: 1.2
+    pitch:
+      random: 1
+      defaultValue: 1
+      minValue: 0.9
+      maxValue: 1.2
+    playProbability: 0.5
+  sources: []

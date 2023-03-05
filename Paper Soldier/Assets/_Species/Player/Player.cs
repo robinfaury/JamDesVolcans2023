@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
     public AnimationCurve jumpFCurve;
     public AnimationCurve jumpVCurve;
     public AnimationCurve rotationCurve;
+    public AudioSource litFuse;
 
     [Title ("REFERENCES")]
     public EventListener eventListener;
@@ -32,6 +33,8 @@ public class Player : MonoBehaviour
     public Sound fallDeathSound;
     public Sound fallSound;
     public Sound penalitySound;
+    public Sound disapointedSound;
+    public Sound playerMoveSound;
 
     [Title ("DEBUG & RUNTIME")]
     public bool isMoving;
@@ -130,7 +133,7 @@ public class Player : MonoBehaviour
                         break;
                     case Action.AboutFace:
                         transform.forward = -transform.forward;
-                        penalitySound.Play();
+                        disapointedSound.Play();
                         break;
                     case Action.DontMove:
                         break;
@@ -147,6 +150,7 @@ public class Player : MonoBehaviour
         animator.Update(Time.deltaTime * animationScale);
     }
 
+    Vector3 a, b;
     public void Move(AnimationCurve f, AnimationCurve v, Vector3 start, Vector3 delta, float tickDuration, string trigger, Action action)
     {
         StartCoroutine(Routine()); IEnumerator Routine ()
@@ -168,6 +172,9 @@ public class Player : MonoBehaviour
             Vector3 df = (end - start).WithY(0).normalized;
             float dv = end.y - start.y;
             Vector3 simulatedPos = Vector3.zero;
+
+            a = start;
+            b = end;
 
             float percent = 0; while ((percent += Time.deltaTime / duration) < 1) {
 
@@ -239,7 +246,7 @@ public class Player : MonoBehaviour
                 }
 
                 animationScale = 1;
-                transform.position = g_currentLevel.GetCellBottomAt(transform.position) + Vector3.up;
+                transform.position = g_currentLevel.GetCellBottomAt(transform.position - Vector3.up * 0.5f) + Vector3.up;
                 if (fallHeight > 1) penalitySound.Play();
 
                 float resetWaitTime = Mathf.CeilToInt (fallDuration / TickManager.TickDuration);
@@ -260,11 +267,13 @@ public class Player : MonoBehaviour
     {
         isMoving = true;
         animationScale = 1;
+        litFuse.Play();
     }
 
     public void StopMovement ()
     {
         isMoving = false;
+        litFuse.Stop();
     }
 
     CellDatas[,,] Perceive(int width, int height, int depth)
@@ -312,6 +321,9 @@ public class Player : MonoBehaviour
         int z = g_currentLevel.ConvertCoordZ (transform.position.z);
 
         DrawAt(0, 0, 1);
+        Gizmos.DrawSphere(a, 0.1f);
+        Gizmos.DrawSphere(b, 0.1f);
+
         void DrawAt(int xo, int yo, int zo)
         {
             g_currentLevel.DrawCell(x + xo, y + yo, z + zo, g_currentLevel.walkableMap[x + xo, y + yo, z + zo] ? Color.red : Color.black);
@@ -324,7 +336,7 @@ public class Player : MonoBehaviour
         if (eventName.Contains ("StepPart") && !isFalling) {
             GameObject footPrint = Instantiate(footPrintPrefab);
             footPrint.transform.position = transform.position + Vector3.up * 0.05f;
-            footPrint.transform.forward = transform.forward;
+            footPrint.transform.forward = model.forward;
             footPrint.SetActive(true);
             Destroy(footPrint, 12);
         }
@@ -332,6 +344,7 @@ public class Player : MonoBehaviour
         if (eventName == "Jump" && !isFalling) jumpSound.Play();
         if (eventName == "Fall" && fallOnMovement) lunchFall = true;
         if (eventName == "DeathExplosion") DeathExplosion();
+        if (eventName == "PlayerMove") playerMoveSound.Play();
     }
 
     public void DeathByHit()
