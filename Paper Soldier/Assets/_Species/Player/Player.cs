@@ -5,6 +5,7 @@ using UnityEngine.UIElements;
 using Sirenix.OdinInspector;
 using static GameManager;
 using UnityEngine.TextCore.Text;
+using System.Linq;
 
 public class Player : MonoBehaviour
 {
@@ -55,6 +56,29 @@ public class Player : MonoBehaviour
         };
     }
 
+    (Vector3Int, int) Cost(Vector3Int cell_in, Vector3Int direction)
+    {
+        int cost = 1000;
+        if (cell_in.x + direction.x < 0 || cell_in.z + direction.z < 0 || cell_in.x + direction.x >= g_currentLevel.map.GetLength(0) || cell_in.z + direction.z >= g_currentLevel.map.GetLength(2))
+        {
+            return (cell_in + direction, cost);
+        }
+        CellDatas focus_level0 = g_currentLevel.map[cell_in.x + direction.x, cell_in.y + 0, cell_in.z + direction.z];
+        CellDatas focus_level1 = g_currentLevel.map[cell_in.x + direction.x, cell_in.y + 1, cell_in.z + direction.z];
+        CellDatas focus_level2 = g_currentLevel.map[cell_in.x + direction.x, cell_in.y + 2, cell_in.z + direction.z];
+        Vector3Int jump = new Vector3Int(0, 0, 0);
+        if (focus_level0 == CellDatas.Empty && focus_level1 == CellDatas.Empty)
+        {
+            cost = 1;
+        }
+        if ((focus_level0 == CellDatas.Solid || focus_level0 == CellDatas.Boulette) && focus_level1 == CellDatas.Empty && focus_level2 == CellDatas.Empty)
+        {
+            cost = 1;
+            jump.y = 1;
+        }
+        return (cell_in + direction + jump, cost);
+    }
+
     IEnumerator Start ()
     {
         eventListener.onEvent += Event;
@@ -62,67 +86,46 @@ public class Player : MonoBehaviour
             while (isMoving && !isFalling) {
 
                 Action action = Action.DontMove;
-                int perseption_width = 5;
-                int character_index_x = perseption_width/2;
-                CellDatas[,,] perseption = Perceive(perseption_width, 3, 2);
+                //int perseption_width = 5;
+                //int character_index_x = perseption_width/2;
+                //CellDatas[,,] perseption = Perceive(perseption_width, 3, 2);
                 Vector3Int current_index_cell = g_currentLevel.PositionToIndex(transform.position);
-
+                Vector3Int focus_index_cell = g_currentLevel.PositionToIndex(transform.position + transform.forward);
+                Vector3Int direction_forward = focus_index_cell - current_index_cell;
+                Vector3Int direction_up = new Vector3Int(0, -1, 0);
+                Vector3Int direction_right = new Vector3Int(
+                    direction_forward.y * direction_up.z - direction_forward.z * direction_up.y,
+                    direction_forward.z * direction_up.x - direction_forward.x * direction_up.z,
+                    direction_forward.x* direction_up.y - direction_forward.y * direction_up.x);
+                (Vector3Int next_cell_forward, int cost_forward) = Cost(current_index_cell, direction_forward);
+                (Vector3Int next_cell_right, int cost_right) = Cost(current_index_cell, direction_right);
+                (Vector3Int next_cell_right_forward, int cost_right_forward) = Cost(next_cell_right, direction_forward);
+                (Vector3Int next_cell_left, int cost_left) = Cost(current_index_cell, -direction_right);
+                (Vector3Int next_cell_left_forward, int cost_left_forward) = Cost(next_cell_left, direction_forward);
+                int cost_path_forward = cost_forward;
+                int cost_path_right = cost_right + cost_right_forward;
+                int cost_path_left = cost_left + cost_left_forward;
+                if (cost_path_right <= cost_path_forward && cost_path_right <= cost_path_left)
+                {
+                    Vector3Int next_cell = current_index_cell + direction_right;
+                    action = g_currentLevel.map[next_cell.x, next_cell.y, next_cell.z] == CellDatas.Empty ? Action.Right : Action.JumpRight;
+                }
+                if (cost_path_left <= cost_path_forward && cost_path_left <= cost_path_right)
+                {
+                    Vector3Int next_cell = current_index_cell - direction_right;
+                    action = g_currentLevel.map[next_cell.x, next_cell.y, next_cell.z] == CellDatas.Empty ? Action.Left : Action.JumpLeft;
+                }
+                if (cost_path_forward <= cost_path_right && cost_path_forward <= cost_path_left)
+                {
+                    Vector3Int next_cell = current_index_cell + direction_forward;
+                    action = g_currentLevel.map[next_cell.x, next_cell.y, next_cell.z] == CellDatas.Empty ? Action.Forward : Action.JumpForward;
+                }
+                if (cost_path_forward >= 1000 && cost_path_right >= 1000 && cost_path_left >= 1000)
+                {
+                    action = Action.AboutFace;
+                }
                 if (current_index_cell.y == 0) {
                     action = Action.Fall;
-                }
-                else {
-                    // Déplacement de la logique de fall dans le movement
-                    // Pour enchainer la chute directement après le déplacement
-                    /*
-                    if (g_currentLevel.map[current_index_cell.x, current_index_cell.y - 1, current_index_cell.z] == CellDatas.Empty) {
-                        action = Action.Fall;
-                    }
-                    */
-                }
-                if (action == Action.DontMove) {
-                    if (perseption[character_index_x, 1, 1] == CellDatas.Empty) {
-                        action = perseption[character_index_x, 0, 1] == CellDatas.Empty ? Action.Forward : Action.JumpForward;
-                    }
-                    else if (perseption[character_index_x - 1, 1, 1] == CellDatas.Empty && perseption[character_index_x - 1, 1, 0] == CellDatas.Empty) {
-                        action = perseption[character_index_x - 1, 0, 0] == CellDatas.Empty ? Action.Left : Action.JumpLeft;
-                    }
-                    else if (perseption[character_index_x + 1, 1, 1] == CellDatas.Empty && perseption[character_index_x + 1, 1, 0] == CellDatas.Empty) {
-                        action = perseption[character_index_x + 1, 0, 0] == CellDatas.Empty ? Action.Right : Action.JumpRight;
-                    }
-                    else if ((perseption[character_index_x - 1, 1, 1] == CellDatas.Solid || perseption[character_index_x - 1, 1, 1] == CellDatas.Boulette) &&
-                        (perseption[character_index_x - 1, 0, 0] == CellDatas.Solid || perseption[character_index_x - 1, 0, 0] == CellDatas.Boulette))
-                    {
-                        action = Action.JumpLeft;
-                    }
-                    else if ((perseption[character_index_x + 1, 1, 1] == CellDatas.Solid || perseption[character_index_x + 1, 1, 1] == CellDatas.Boulette) &&
-                        (perseption[character_index_x + 1, 0, 0] == CellDatas.Solid || perseption[character_index_x + 1, 0, 0] == CellDatas.Boulette))
-                    {
-                        action = Action.JumpRight;
-                    }
-                }
-                if (action == Action.JumpForward)
-                {
-                    if ((perseption[character_index_x, 2, 1] == CellDatas.Solid || perseption[character_index_x, 2, 1] == CellDatas.Boulette))
-                    {
-                        action = Action.DontMove;
-                    }
-                }
-                if (action == Action.JumpLeft)
-                {
-                    if ((perseption[character_index_x - 1, 2, 1] == CellDatas.Solid || perseption[character_index_x - 1, 2, 1] == CellDatas.Boulette))
-                    {
-                        action = Action.DontMove;
-                    }
-                }
-                if (action == Action.JumpRight)
-                {
-                    if ((perseption[character_index_x + 1, 2, 1] == CellDatas.Solid || perseption[character_index_x + 1, 2, 1] == CellDatas.Boulette))
-                    {
-                        action = Action.DontMove;
-                    }
-                }
-                if (action == Action.DontMove) {
-                    action = Action.AboutFace;
                 }
 
                 int tickAmount = 1;
